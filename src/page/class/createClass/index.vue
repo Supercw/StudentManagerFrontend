@@ -43,7 +43,7 @@ export default {
         }
         .operation {
             display: flex;
-            align-content: center;
+            align-items: center;
         }
     }
     .line {
