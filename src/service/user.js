@@ -2,10 +2,10 @@
 import fetch from '../config/axios'
 
 // 登录接口
-export const login = (data) => fetch('/login', data, 'POST', true)
+export const login = (paramData, postData) => fetch('/login', postData, 'POST', true)
 
 // 获取用户的基本信息
-export const getUserInfo = (data) => fetch('/lk/getUserInfo', data, 'POST', true)
+export const getUserInfo = (paramData, postData) => fetch(`/user/${paramData.userId}`, postData, 'GET', true)
 
 // 登录接口
 export const logout = (data) => fetch('/lk/logout', data, 'POST')

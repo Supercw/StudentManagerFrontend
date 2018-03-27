@@ -1,57 +1,38 @@
-import { LOGIN_BY_USERNAME, LOGIN_SUCCESS_BY_USERNAME, LOGIN_FAILED_BY_USERNAME, GET_USER_INFO, GET_USER_INFO_SUCCESS } from './mutations_types'
-import { login, getUserInfo, logout } from '../../../service/user'
+import { getUserInfo, logout } from '../../../service/user'
+import storage from '../../../config/storageHelp'
 
 // 初始化state状态
 const state = {
     user: {}, // 当前用户
-    roles: [], // 权限
+    roleType: -1, // 权限默认是 -1
     name: '',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    requestStatus: {
-        isError: false,
-        message: ''
-    }
+    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
 }
 
 const getters = {
     currentUserInfo: (state, getters, rootState) => {
         return state.user
     },
-    loginRequestStatus: (state) => {
-        return state.requestStatus
-    },
-    roles: (state) => {
-        return state.roles
+    roleType: (state) => {
+        return state.roleType
     }
 }
 
 const actions = {
-    // 登录
-    [LOGIN_BY_USERNAME]({
-        dispatch,
-        commit,
-        state
-    }, data) {
-        // console.log('login param', data)
-        return new Promise((resolve, reject) => {
-            login(data).then(res => {
-                // console.log('login action success', res)
-                commit(LOGIN_SUCCESS_BY_USERNAME, res)
-                resolve(res)
-            }).catch((ex) => {
-                // console.log('login error', ex)
-                commit(LOGIN_FAILED_BY_USERNAME)
-                reject(ex)
-            })
-        })
-    },
     // 获取用户信息
-    [GET_USER_INFO]({ commit, state }) {
+    GetUserInfo({ commit, state }) {
         return new Promise((resolve, reject) => {
-            getUserInfo().then(res => {
+            let paramData = {
+                userId: storage.userId
+            }
+            getUserInfo(paramData, {}).then(res => {
                 // console.log('getUserInfo', res)
-                commit(GET_USER_INFO_SUCCESS, res)
-                resolve(res)
+                if (res.code === 10000) {
+                    commit('SAVE_USER_INFO', res.data)
+                    resolve()
+                } else {
+                    reject(res)
+                }
             }).catch(error => {
                 reject(error)
             })
@@ -61,8 +42,7 @@ const actions = {
     LogOut({ commit, state }) {
         return new Promise((resolve, reject) => {
             logout().then(() => {
-                commit('SET_TOKEN', '')
-                commit('SET_ROLES', [])
+                commit('CLEAR_LOGIN_INFO')
                 resolve()
             }).catch(error => {
                 console.log(error)
@@ -74,33 +54,37 @@ const actions = {
 }
 
 const mutations = {
-    // 登录
-    [LOGIN_SUCCESS_BY_USERNAME](state, data) {
-        const content = data.data
-        console.log('login mutation', data)
-        if (data.status === '1') {
-            // 登录成功
-            state.requestStatus.isError = false
-            state.user = content.user
-        } else {
-            // 登录失败
-            state.requestStatus.isError = true
-            state.requestStatus.message = data.message ? data.message : '登录失败,服务器异常'
+    // 保存用户信息
+    SAVE_USER_INFO(state, userInfo) {
+        console.log('userInfo', userInfo)
+        state.user = userInfo
+        if (userInfo.roleType) {
+            // 保存角色
+            state.roleType = userInfo.roleType
         }
     },
-    [LOGIN_FAILED_BY_USERNAME](state, data) {
-        // 登录失败
-        state.requestStatus.isError = true
-        state.requestStatus.message = '登录失败,服务器异常'
-    },
-    [GET_USER_INFO_SUCCESS](state, data) {
-        // 获取用户信息成功
-        console.log('getUserInfo mutations', data)
-        const content = data.data
-        if (data.status === '1') {
-            state.roles = content.roles
-            state.user = content.user
+    // 保存登录信息,token,userId
+    SAVE_LOGIN_INFO(state, loginInfo) {
+        console.log('loginInfo', loginInfo)
+        state.user = loginInfo
+        if (loginInfo.roleType) {
+            // 设置角色
+            // state.roleType = loginInfo.roleType
         }
+        if (loginInfo.id) {
+            storage.userId = loginInfo.id
+        }
+        if (loginInfo.token) {
+            storage.token = loginInfo.token
+        }
+        storage.save()
+    },
+    // 清除登录信息
+    CLEAR_LOGIN_INFO(state, data) {
+        state.roleType = -1
+        storage.token = ''
+        storage.userId = ''
+        storage.save()
     }
 }
 

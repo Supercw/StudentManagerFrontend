@@ -5,7 +5,7 @@
 const propsPrefix = '$storeData$'
 
 // 默认键值
-const props = ['lktoken', 'userName', 'gender']
+const props = ['token', 'userId']
 
 class StrorageHelp {
     constructor() {

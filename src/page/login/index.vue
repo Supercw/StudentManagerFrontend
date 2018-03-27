@@ -5,35 +5,18 @@
             <h3 class="title">{{$t('login.title')}}</h3>
             <lang-select class="set-language"></lang-select>
         </div>
+
         <el-form-item prop="username">
-            <span class="svg-container svg-container_login">
-          <svg-icon icon-class="user" />
-        </span>
-            <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="username" />
+            <span class="svg-container svg-container_login"><svg-icon icon-class="user" /></span>
+            <el-input name="username" type="text" v-model="loginForm.username" autoComplete="on" placeholder="请输入用户名" />
         </el-form-item>
 
         <el-form-item prop="password">
-            <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-            <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="password" />
-            <span class="show-pwd" @click="showPwd">
-          <svg-icon icon-class="eye" />
-        </span>
+            <span class="svg-container"><svg-icon icon-class="password" /></span>
+            <el-input name="password" :type="passwordType" @keyup.enter.native="handleLogin" v-model="loginForm.password" autoComplete="on" placeholder="请输入密码" />
+            <span class="show-pwd" @click="showPwd"><svg-icon icon-class="eye" /></span>
         </el-form-item>
-
         <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">{{$t('login.logIn')}}</el-button>
-
-        <div class="tips">
-            <span>{{$t('login.username')}} : admin</span>
-            <span>{{$t('login.password')}} : {{$t('login.any')}}</span>
-        </div>
-        <div class="tips">
-            <span style="margin-right:18px;">{{$t('login.username')}} : editor</span>
-            <span>{{$t('login.password')}} : {{$t('login.any')}}</span>
-        </div>
-
-        <el-button class="thirdparty-button" type="primary" @click="showDialog=true">{{$t('login.thirdparty')}}</el-button>
     </el-form>
 
     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
@@ -44,36 +27,22 @@
 </template>
 
 <script>
-import { isvalidUsername } from '../../utils/validate'
 import LangSelect from './component/LangSelect'
-import { LOGIN_BY_USERNAME } from './module/mutations_types'
+// import { LOGIN_BY_USERNAME } from './module/mutations_types'
+import { login } from '../../service/user'
 
 export default {
     components: { LangSelect },
     name: 'login',
     data() {
-        const validateUsername = (rule, value, callback) => {
-            if (!isvalidUsername(value)) {
-                callback(new Error('Please enter the correct user name'))
-            } else {
-                callback()
-            }
-        }
-        const validatePassword = (rule, value, callback) => {
-            if (value.length < 6) {
-                callback(new Error('The password can not be less than 6 digits'))
-            } else {
-                callback()
-            }
-        }
         return {
             loginForm: {
                 username: 'admin',
-                password: '1111111'
+                password: 'admin'
             },
             loginRules: {
-                username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-                password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+                username: [{ required: true, trigger: 'blur', message: '请输入用户名' }],
+                password: [{ required: true, trigger: 'blur', min: 5, max: 8, message: '长度在5到8个字符' }]
             },
             passwordType: 'password',
             loading: false,
@@ -89,31 +58,45 @@ export default {
             }
         },
         handleLogin() {
-            this.$refs.loginForm.validate(valid => {
-                if (valid) {
+            this.$refs.loginForm.validate(pass => {
+                if (pass) {
                     this.loading = true
-                    this.$store.dispatch(LOGIN_BY_USERNAME, this.loginForm).then((res) => {
+                    let paramData = {}
+                    let postData = {
+                        username: this.loginForm.username,
+                        password: this.loginForm.password
+                    }
+                    login(paramData, postData).then(res => {
+                        // console.log('log success', res)
                         this.loading = false
-                        let loginRequestStatus = this.$store.getters.loginRequestStatus
-                        if (!loginRequestStatus.isError) {
+                        if (res.code === 10000) {
                             // 登录成功
-                            let currentUserInfo = this.$store.getters.currentUserInfo
-                            console.log('登录成功,当前用户信息', currentUserInfo);
-                            this.$router.push({ path: '/' })
+                            this.$store.commit('SAVE_LOGIN_INFO', res.data)
+                            this.$notify.success({
+                                title: '登录成功'
+                            })
+                            this.$router.push({
+                                name: 'dashboard',
+                                query: {}
+                            })
                         } else {
                             // 登录失败
-                            console.log('登录失败1', loginRequestStatus.message)
+                            let failedMsg = res.message ? res.message : '服务器异常'
                             this.$notify.error({
-                                title: '错误',
-                                message: loginRequestStatus.message
+                                title: '登录失败',
+                                message: failedMsg
                             })
                         }
-                    }).catch(() => {
+                    }).catch(err => {
+                        console.log('login err ', err)
                         this.loading = false
-                        console.log('登录错误')
+                        this.$notify.error({
+                            title: '登录失败',
+                            message: '服务器异常'
+                        })
                     })
                 } else {
-                    console.log('error submit!!')
+                    console.log('login validate no pass')
                     return false
                 }
             })

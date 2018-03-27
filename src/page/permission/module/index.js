@@ -2,7 +2,7 @@
  * 权限状态管理
  */
 
-import { GENERATE_ROUTER_BY_ROLES, SET_ROUTERS } from './mutations_types'
+import { SET_ROUTERS } from './mutations_types'
 
 import {
     asyncRouterMap,
@@ -25,21 +25,21 @@ const getters = {
 }
 
 const actions = {
-    [GENERATE_ROUTER_BY_ROLES]({
+    // 根据用户角色，动态生成路由
+    GenerateRouterByRoleType({
         dispatch,
         commit,
-        state
+        state,
+        rootState
     }, data) {
         return new Promise(resolve => {
-            const {
-                roles
-            } = data
-            // console.log('GENERATE_ROUTER_BY_ROLES state', state)
+            const roleType = rootState.user.roleType
+            // console.log('GenerateRouterByRoleType', roleType)
             let accessedRouters
-            if (roles.indexOf('admin') >= 0) {
+            if (roleType === 4) {
                 accessedRouters = asyncRouterMap
             } else {
-                accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+                accessedRouters = filterAsyncRouter(asyncRouterMap, roleType)
             }
             commit(SET_ROUTERS, accessedRouters)
             resolve()
@@ -48,8 +48,8 @@ const actions = {
 }
 
 const mutations = {
-    SET_ROUTERS: (state, routers) => {
-        console.log('mutations generate routers', routers)
+    SET_ROUTERS(state, routers) {
+        // console.log('SET_ROUTERS', routers)
         state.addRouters = routers
         state.routers = constantRouterMap.concat(routers)
     }
@@ -60,11 +60,11 @@ const mutations = {
  * @param asyncRouterMap
  * @param roles
  */
-function filterAsyncRouter(asyncRouterMap, roles) {
+function filterAsyncRouter(asyncRouterMap, roleType) {
     const accessedRouters = asyncRouterMap.filter(route => {
-        if (hasPermission(roles, route)) {
+        if (hasPermission(roleType, route)) {
             if (route.children && route.children.length) {
-                route.children = filterAsyncRouter(route.children, roles)
+                route.children = filterAsyncRouter(route.children, roleType)
             }
             return true
         }
@@ -78,12 +78,13 @@ function filterAsyncRouter(asyncRouterMap, roles) {
  * @param roles
  * @param route
  */
-function hasPermission(roles, route) {
-    if (route.meta && route.meta.roles) {
-        return roles.some(role => route.meta.roles.indexOf(role) >= 0)
-    } else {
-        return true
-    }
+function hasPermission(roleType, route) {
+    return true
+    // if (route.meta && route.meta.roles) {
+    //     return roles.some(role => route.meta.roles.indexOf(role) >= 0)
+    // } else {
+    //     return true
+    // }
 }
 
 export default {

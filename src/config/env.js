@@ -8,7 +8,7 @@
 
 // const baseUrl = 'http://lkj-web-dev-laikang.p.laikang.com'
 
-const baseUrl = 'http://127.0.0.1:9100'
+const baseUrl = 'http://127.0.0.1:3800'
 
 // 代理服务器
 // const baseUrl = '/api'
@@ -16,9 +16,9 @@ const baseUrl = 'http://127.0.0.1:9100'
 
 
 
-const lktoken = ''
+const token = ''
 //  const lktoken = 'a5609a773d9c4a2da4a6c94284c25ccc'
 export {
     baseUrl,
-    lktoken
+    token
 }

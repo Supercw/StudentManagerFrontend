@@ -1,12 +1,12 @@
 import axios from 'axios'
 import {
     baseUrl,
-    lktoken
+    token
 } from './env'
 import { Loading } from 'element-ui'; // 全局loading
 import storage from './storageHelp'
 
-import store from '../store'
+// import store from '../store'
 // import qs from 'qs'
 
 let isShowElementLoading = true // 默认显示loading
@@ -37,7 +37,7 @@ const service = axios.create({
     }],
     validateStatus: status => {
         // 200~300之间resolve，其余的reject
-        return status >= 200 && status < 300
+        return status < 500
     }
 })
 
@@ -45,12 +45,12 @@ const service = axios.create({
 service.interceptors.request.use(config => {
     // 发送请求前，增加Loading
     showElementLoading()
-    if (storage.lktoken) {
+    if (storage.token) {
         // 让每个请求携带token, 根据后台配置
-        config.headers.lktoken = storage.lktoken
+        config.headers.token = storage.token
     } else {
         // 测试token
-        config.headers.lktoken = lktoken
+        config.headers.token = token
     }
     //  console.log('interceptors request', config);
     return config
@@ -69,41 +69,22 @@ service.interceptors.request.use(config => {
 // response 响应拦截器, 主要是对错误统一处理
 service.interceptors.response.use(
     response => {
-        // status code 200~300之间
-        // store.commit('LOADING_FINISH')
-        //  console.log('interceptors response', response)
-        let res = response.data
-        if (res.code === '410') {
-            // 410 需要授权或者令牌过期。清除lktoken信息,并提示重新加载页面
-            setTimeout(() => {
-                store.commit({
-                    type: 'CLEAR_LKTOKEN',
-                    payload: {
-                        message: res.message
-                    }
-                })
-            }, 500)
-        } else if (res.code === '411') {
-            // 411
+        // console.log('interceptors response success', response)
+        let result = {}
+        if (response.status === 200) {
+            result.code = 10000
+            result.data = response.data
+        } else {
+            result.code = response.data.code ? response.data.code : 10001
+            result.message = response.data.message ? response.data.message : ''
+            result.error = response.data.error ? response.data.error : ''
         }
         closeElementLoading()
-        return response.data
+        console.log('result', result)
+        return result
     },
     error => {
         console.error('interceptors response error', error)
-        if (error.response) {
-            //  console.log('http status code', error.response.status)
-            switch (error.response.status) {
-                case 400:
-                    // 400 页面不存在
-                    break;
-                case 401:
-                    break;
-                case 500:
-                    // 500 服务器内部出错
-                    break;
-            }
-        }
         closeElementLoading()
         return Promise.reject(error.response)
     })
