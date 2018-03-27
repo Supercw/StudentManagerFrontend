@@ -34,6 +34,10 @@ const errorPage404 = r => require.ensure([], () => r(require('../page/errorPage/
 const svgIcons = r => require.ensure([], () => r(require('../page/svgIcons')), 'svgIcons')
 
 
+const createClass = r => require.ensure([], () => r(require('../page/class/createClass')), 'createClass')
+const queryClass = r => require.ensure([], () => r(require('../page/class/queryClass')), 'queryClass')
+
+
 /**
  * 配置详解
  * hidden: true 路由不会再侧边栏出现 如401，login等页面(默认 false)
@@ -129,6 +133,25 @@ export const asyncRouterMap = [{
     children: [
         { path: 'index', component: svgIcons, name: 'icon', meta: { title: 'icons', icon: 'icon', noCache: true } }
     ]
+}, {
+    path: '/class',
+    component: layout,
+    name: 'class',
+    meta: {
+        title: 'class',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryClass',
+        component: queryClass,
+        name: 'queryClass',
+        meta: { title: 'queryClass', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createClass',
+        component: createClass,
+        name: 'createClass',
+        meta: { title: 'createClass', icon: 'documentation', noCache: true }
+    }]
 }, {
     path: '*',
     redirect: '/404',

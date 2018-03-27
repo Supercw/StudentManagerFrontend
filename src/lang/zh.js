@@ -47,7 +47,12 @@ export default {
         theme: '换肤',
         clipboardDemo: 'Clipboard',
         i18n: '国际化',
-        table: '表格'
+        table: '表格',
+        // 自定义班级   //
+        class: '班级管理',
+        createClass: '创建班级 ',
+        queryClass: '查询班级'
+
     },
     navbar: {
         logOut: '退出登录',

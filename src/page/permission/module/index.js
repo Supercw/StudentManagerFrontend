@@ -9,6 +9,8 @@ import {
     constantRouterMap
 } from '../../../router'
 
+import role from '../../../config/role'
+
 // 初始化state状态
 const state = {
     routers: constantRouterMap, // 固定路由
@@ -36,7 +38,7 @@ const actions = {
             const roleType = rootState.user.roleType
             // console.log('GenerateRouterByRoleType', roleType)
             let accessedRouters
-            if (roleType === 4) {
+            if (roleType === role.type.ADMIN) {
                 accessedRouters = asyncRouterMap
             } else {
                 accessedRouters = filterAsyncRouter(asyncRouterMap, roleType)
