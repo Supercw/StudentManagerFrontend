@@ -96,21 +96,27 @@ const closeElementLoading = () => {
 }
 
 const showElementLoading = () => {
+    console.log('isShowElementLoading', isShowElementLoading)
     if (isShowElementLoading) {
         elementLoadingObj = Loading.service({ fullscreen: true, text: '正在加载中...' })
     }
 }
 
-export default async (url = '', data = {}, requesTtype = 'GET', noShowloading) => {
+/**
+ * [description]
+ * @param  {String}  [url='']            [url]
+ * @param  {Object}  [data={}]           [请求数据]
+ * @param  {String}  [requesTtype='GET'] [请求方式]
+ * @param  {[type]}  noShowloading       [是否显示加载loading]
+ * @return {Promise}                     [description]
+ */
+export default async (url = '', data = {}, requesTtype = 'GET', showloading = false) => {
     const type = requesTtype.toUpperCase()
     let requestConfig = {
         method: type,
         url: url
     }
-    if (noShowloading) {
-        // 不显示 loading
-        isShowElementLoading = false
-    }
+    isShowElementLoading = showloading
     if (type === 'GET') {
         requestConfig.params = data
     }

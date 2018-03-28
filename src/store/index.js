@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import app from './config/app'
+import config from './config/config'
 import errorLog from './config/errorLog'
 import tagsView from './config/tagsView'
 
@@ -19,6 +20,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     modules: {
         app,
+        config,
         errorLog,
         tagsView,
         permission,

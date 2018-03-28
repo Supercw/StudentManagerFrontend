@@ -4,27 +4,136 @@
         <el-header style="" class="head">
             <span class="title">创建班级</span>
             <div class="operation">
-                <el-button type="primary" size="small">主要按钮</el-button>
                 <el-button type="primary" size="small">返回</el-button>
             </div>
         </el-header>
-        <section class="line"></section>
-        <el-main>Main</el-main>
+        <section class="custom-line"></section>
+        <el-main>
+            <el-form :model="createClassForm" :rules="rules" ref="createClassForm" label-width="100px" style="width:800px;margin;0 auto;">
+                <el-form-item label="班级名称" prop="name">
+                    <el-input v-model="createClassForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="所属院系" prop="department">
+                    <el-select v-model="createClassForm.department" placeholder="请选择院系">
+                        <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="班级备注" prop="note">
+                    <el-input type="textarea" v-model="createClassForm.note"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('createClassForm')">创建</el-button>
+                    <el-button @click="resetForm('createClassForm')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </el-main>
     </el-container>
 </div>
 </template>
 
 <script>
+import { createClass } from '../../../service/class'
 export default {
     name: 'createClass',
     components: {},
     data() {
         return {
+            createClassForm: {
+                name: '',
+                department: '',
+                note: ''
+            },
+            rules: {
+                name: [
+                    { required: true, message: '请输入班级名称', trigger: 'blur' },
+                    { min: 3, message: '长度需大于3字符', trigger: 'blur' }
+                ],
+                department: [
+                    { required: true, message: '请选择院系', trigger: 'change' }
+                ],
+                note: [
+                    { required: true, message: '请填写班级备注', trigger: 'blur' }
+                ]
+            },
+            departmentList: [
+                '计算机学院',
+                '材料科学与工程学院',
+                '电子信息工程学院'
+            ],
+            routerParams: {
+
+            }
+        }
+    },
+    methods: {
+        submitForm(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    console.log('submitForm', this.createClassForm)
+                    let postData = {
+                        name: this.createClassForm.name,
+                        note: this.createClassForm.note,
+                        department: this.createClassForm.department
+                    }
+                    createClass(postData).then(res => {
+                        console.log('log success', res)
+                        if (res.code === 10000) {
+                            // 成功
+                            this.showMsg(false, '创建成功')
+                            this.$router.push({
+                                name: 'queryClass'
+                            })
+                        } else {
+                            // 失败
+                            let failedMsg = res.message ? res.message : '服务器异常'
+                            this.showMsg(true, '创建失败', failedMsg)
+                        }
+                    }).catch(err => {
+                        console.log('err', err)
+                        this.showMsg(true, '创建失败', '服务器异常')
+                    })
+                } else {
+                    console.log('error submit!!');
+                    return false;
+                }
+            });
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
+        initData() {
+            if (this.$store.getters.departments.length > 0) {
+                this.departmentList = this.$store.getters.departments
+                // console.log('departments', this.departmentList)
+            } else {
+                // 从服务器获取部门数据
+                this.$store.dispatch('GetDepartmentsData').then((res) => {
+                    // console.log('GetDepartmentsData success', res)
+                    this.departmentList = this.$store.getters.departments
+                }).catch((error) => {
+                    console.log('GetDepartmentsData', error)
+                })
+            }
+        },
+        showMsg(isError, title, msg) {
+            if (isError) {
+                this.$notify.error({
+                    title: title,
+                    message: msg
+                })
+            } else {
+                this.$notify.success({
+                    title: title
+                })
+            }
+        },
+        submitData() {
 
         }
     },
     mounted() {
-        console.log('form component mounted =>');
+        this.routerParams = this.$route.query
+        this.initData()
     }
 }
 </script>
@@ -46,7 +155,7 @@ export default {
             align-items: center;
         }
     }
-    .line {
+    .custom-line {
         border-top: 1px solid #DDD;
         width: 100%;
     }
