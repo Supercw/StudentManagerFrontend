@@ -9,23 +9,27 @@
         </el-header>
         <section class="custom-line"></section>
         <el-main>
-            <el-form :model="createClassForm" :rules="rules" ref="createClassForm" label-width="100px" style="width:800px;margin;0 auto;">
-                <el-form-item label="班级名称" prop="name">
-                    <el-input v-model="createClassForm.name"></el-input>
-                </el-form-item>
-                <el-form-item label="所属院系" prop="department">
-                    <el-select v-model="createClassForm.department" placeholder="请选择院系">
-                        <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="班级备注" prop="note">
-                    <el-input type="textarea" v-model="createClassForm.note"></el-input>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('createClassForm')">创建</el-button>
-                    <el-button @click="resetForm('createClassForm')">重置</el-button>
-                </el-form-item>
-            </el-form>
+            <section class="create">
+                <el-form :model="createClassForm" :rules="rules" ref="createClassForm" label-width="100px" style="width:600px;">
+                    <el-form-item label="班级名称" prop="name" class="m20">
+                        <el-input v-model="createClassForm.name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="所属院系" prop="department" class="m35">
+                        <el-select v-model="createClassForm.department" placeholder="请选择院系">
+                            <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="班级备注" prop="note" class="m35">
+                        <el-input type="textarea" v-model="createClassForm.note"></el-input>
+                    </el-form-item>
+                    <el-form-item class="m35">
+                        <section class="op">
+                            <el-button type="primary" @click="submitForm('createClassForm')">创建</el-button>
+                            <el-button @click="resetForm('createClassForm')">重置</el-button>
+                        </section>
+                    </el-form-item>
+                </el-form>
+            </section>
         </el-main>
     </el-container>
 </div>
@@ -158,6 +162,20 @@ export default {
     .custom-line {
         border-top: 1px solid #DDD;
         width: 100%;
+    }
+    .create {
+        display: flex;
+        justify-content: center;
+        .op {
+            display: flex;
+            // justify-content: center;
+        }
+        .m20 {
+            margin-top: 20px;
+        }
+        .m35 {
+            margin-top: 35px;
+        }
     }
 }
 </style>
