@@ -33,8 +33,9 @@ const errorPage404 = r => require.ensure([], () => r(require('../page/errorPage/
 // svg图标
 const svgIcons = r => require.ensure([], () => r(require('../page/svgIcons')), 'svgIcons')
 
-
+// 班级管理
 const createClass = r => require.ensure([], () => r(require('../page/class/createClass')), 'createClass')
+const editClass = r => require.ensure([], () => r(require('../page/class/editClass')), 'editClass')
 const queryClass = r => require.ensure([], () => r(require('../page/class/queryClass')), 'queryClass')
 
 
@@ -151,6 +152,11 @@ export const asyncRouterMap = [{
         component: createClass,
         name: 'createClass',
         meta: { title: 'createClass', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editClass',
+        component: editClass,
+        name: 'editClass',
+        meta: { title: 'editClass', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '*',

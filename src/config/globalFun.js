@@ -6,16 +6,85 @@
  */
 exports.install = function (Vue, options) {
     /**
-     * [showLoadMsg 显示加载框]
-     * @param  {[type]} msg         [description]
-     * @param  {Number} [time=2000] [延时,不设置默认为2000ms]
-     * @return {[type]}             [description]
+     * [showNotifyMsg 通知]
+     * @param  {Boolean} type [1:成功,2:警告]
+     * @param  {[type]}  title   [标题]
+     * @param  {[type]}  msg     [描述]
+     * @return {[type]}          [description]
      */
-    Vue.prototype.showLoadMsg = function (msg, time = 2000) {
-        this.$layer.toast({
-            content: msg,
-            time: time
-        })
+    Vue.prototype.showNotifyMsg = function (type, title, msg) {
+        let msgObj = {
+            duration: 2000
+        }
+        if (title) {
+            msgObj.title = title
+        }
+        if (msg) {
+            msgObj.message = msg
+        }
+        switch (type) {
+            case 1:
+                // 成功
+                this.$notify.success(msgObj)
+                break;
+            case 2:
+                // 警告
+                this.$notify.warning(msgObj)
+                break;
+            case 3:
+                // 信息
+                this.$notify.info(msgObj)
+                break;
+            case 4:
+                // 失败
+                this.$notify.error(msgObj)
+                break;
+            default:
+                this.$notify.success(msgObj)
+        }
+    }
+
+    /**
+     * [showMsg 消息]
+     * @param  {[type]} type  [description]
+     * @param  {[type]} msg   [description]
+     * @return {[type]}       [description]
+     */
+    Vue.prototype.showMsg = function (type, msg) {
+        switch (type) {
+            case 1:
+                // 成功
+                this.$message({
+                    message: msg,
+                    type: 'success'
+                });
+                break;
+            case 2:
+                // 警告
+                this.$message({
+                    message: msg,
+                    type: 'warning'
+                });
+                break;
+            case 3:
+                // 信息
+                this.$message({
+                    message: msg
+                });
+                break;
+            case 4:
+                // 失败
+                this.$message({
+                    message: msg,
+                    type: 'error'
+                });
+                break;
+            default:
+                this.$message({
+                    message: msg,
+                    type: ''
+                });
+        }
     }
 
     /**

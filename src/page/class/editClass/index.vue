@@ -2,7 +2,7 @@
 <div class="createClassContainer">
     <el-container>
         <el-header style="" class="head">
-            <span class="title">创建班级</span>
+            <span class="title">编辑班级信息</span>
             <div class="operation">
                 <el-button type="primary" size="small" @click="back">返回</el-button>
             </div>
@@ -10,22 +10,26 @@
         <section class="custom-line"></section>
         <el-main>
             <section class="create">
-                <el-form :model="createClassForm" :rules="rules" ref="createClassForm" label-width="100px" style="width:600px;">
-                    <el-form-item label="班级名称" prop="name" class="m20">
-                        <el-input v-model="createClassForm.name"></el-input>
+                <el-form :model="editClassForm" :rules="rules" ref="editClassForm" label-width="100px" style="width:600px;">
+                    <el-form-item label="班级ID" prop="id" class="m20">
+                        <el-input v-model="orginData.id" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="班级名称" prop="name" class="m35">
+                        <el-input v-model="editClassForm.name"></el-input>
                     </el-form-item>
                     <el-form-item label="所属院系" prop="department" class="m35">
-                        <el-select v-model="createClassForm.department" placeholder="请选择院系">
+                        <el-select v-model="editClassForm.department" placeholder="请选择院系">
                             <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="班级备注" prop="note" class="m35">
-                        <el-input type="textarea" v-model="createClassForm.note"></el-input>
+                        <el-input type="textarea" v-model="editClassForm.note"></el-input>
                     </el-form-item>
                     <el-form-item class="m35">
                         <section class="op">
-                            <el-button plain type="primary" @click="submitForm('createClassForm')">创建</el-button>
-                            <el-button plain type="danger" @click="resetForm('createClassForm')">重置</el-button>
+                            <el-button type="primary" plain :disabled="this.disabled" @click="submitForm('editClassForm')">更新</el-button>
+                            <el-button type="success" plain :disabled="this.disabled" @click="reductionForm">还原</el-button>
+                            <el-button type="danger" plain :disabled="this.disabled" @click="resetForm('editClassForm')">重置</el-button>
                         </section>
                     </el-form-item>
                 </el-form>
@@ -36,16 +40,21 @@
 </template>
 
 <script>
-import { createClass } from '../../../service/class'
+import { updateClass, queryClassById } from '../../../service/class'
+import _ from 'lodash'
 export default {
-    name: 'createClass',
+    name: 'updateClass',
     components: {},
     data() {
         return {
-            createClassForm: {
+            editClassForm: {
+                id: '',
                 name: '',
                 department: '',
                 note: ''
+            },
+            orginData: {
+
             },
             rules: {
                 name: [
@@ -66,35 +75,49 @@ export default {
             ],
             routerParams: {
 
-            }
+            },
+            disabled: true
         }
     },
     methods: {
         submitForm(formName) {
+            if (!this.routerParams.classId) {
+                this.showMsg(2, '班级ID不存在')
+                return
+            }
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    console.log('submitForm', this.createClassForm)
-                    let postData = {
-                        name: this.createClassForm.name,
-                        note: this.createClassForm.note,
-                        department: this.createClassForm.department
+                    console.log('submitForm', this.editClassForm)
+                    let sendData = {}
+                    let update = false
+                    _.each(this.orginData, (value, key) => {
+                        if (this.editClassForm.hasOwnProperty(key) && this.editClassForm[key] !== value) {
+                            sendData[key] = this.editClassForm[key]
+                            update = true
+                        }
+                    })
+                    if (!update) {
+                        this.showMsg(2, '您没有修改任何数据')
+                        return
                     }
-                    createClass(postData).then(res => {
+                    let paramData = {
+                        classId: this.routerParams.classId
+                    }
+                    console.log('sendData', sendData)
+                    updateClass(paramData, sendData).then(res => {
                         console.log('log success', res)
                         if (res.code === 10000) {
                             // 成功
-                            this.showMsg(1, '创建成功')
-                            this.$router.push({
-                                name: 'queryClass'
-                            })
+                            this.showMsg(1, '更新成功')
+                            this.back()
                         } else {
                             // 失败
-                            let failedMsg = res.message ? res.message : '创建失败,服务器异常'
+                            let failedMsg = res.message ? res.message : '更新失败,服务器异常'
                             this.showMsg(4, failedMsg)
                         }
                     }).catch(err => {
                         console.log('err', err)
-                        this.showMsg(4, '创建失败,服务器异常')
+                        this.showMsg(4, '更新失败,服务器异常')
                     })
                 } else {
                     console.log('error submit!!');
@@ -104,6 +127,41 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
+        },
+        reductionForm() {
+            console.log('reductionForm')
+            this.mergeData()
+        },
+        query() {
+            if (!this.routerParams.classId) {
+                this.showMsg(4, '班级ID不存在')
+                return
+            }
+            queryClassById({ classId: this.routerParams.classId }).then(res => {
+                console.log('log success', res)
+                if (res.code === 10000) {
+                    // 成功
+                    this.disabled = false
+                    this.orginData = res.data
+                    this.mergeData()
+                } else {
+                    // 失败
+                    let failedMsg = res.message ? res.message : '查询失败,服务器异常'
+                    this.showMsg(4, failedMsg)
+                }
+            }).catch(err => {
+                console.log('err', err)
+                this.showMsg(4, '查询失败,服务器异常')
+            })
+        },
+        mergeData() {
+            _.each(this.orginData, (value, key) => {
+                // console.log('mergeData', key)
+                if (this.editClassForm.hasOwnProperty(key)) {
+                    this.editClassForm[key] = value
+                }
+            })
+            console.log('this.editClassForm', this.editClassForm)
         },
         back() {
             this.$router.go(-1)
@@ -121,9 +179,7 @@ export default {
                     console.log('GetDepartmentsData', error)
                 })
             }
-        },
-        submitData() {
-
+            this.query()
         }
     },
     mounted() {

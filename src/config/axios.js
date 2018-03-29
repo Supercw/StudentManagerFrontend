@@ -120,7 +120,7 @@ export default async (url = '', data = {}, requesTtype = 'GET', showloading = fa
     if (type === 'GET') {
         requestConfig.params = data
     }
-    if (type === 'POST') {
+    if (type === 'POST' || type === 'PUT') {
         // var submit = {}
         // console.log('axios', data);
         //  submit.data = data

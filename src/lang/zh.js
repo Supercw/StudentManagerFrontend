@@ -51,7 +51,8 @@ export default {
         // 自定义班级   //
         class: '班级管理',
         createClass: '创建班级 ',
-        queryClass: '查询班级'
+        queryClass: '查询班级',
+        editClass: '编辑班级'
 
     },
     navbar: {

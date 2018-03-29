@@ -4,7 +4,7 @@
         <el-header style="" class="head">
             <span class="title">查询班级</span>
             <div class="operation">
-                <el-button type="primary" size="small">返回</el-button>
+                <!-- <el-button type="primary" size="small">返回</el-button> -->
                 <el-button type="primary" size="small" @click="handlerCreate">创建班级</el-button>
             </div>
         </el-header>
@@ -36,7 +36,7 @@
                     <el-table-column label="操作" width="180">
                         <template slot-scope="scope">
                             <section class="table-op">
-                                <el-button size="mini" type="info" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                                 <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                             </section>
                         </template>
@@ -76,14 +76,6 @@ export default {
                 createdAt: '2016-05-04',
                 name: '王小虎',
                 note: '上海市普陀区金沙江路 1517 弄'
-            }, {
-                createdAt: '2016-05-01',
-                name: '王小虎',
-                note: '上海市普陀区金沙江路 1519 弄'
-            }, {
-                createdAt: '2016-05-03',
-                name: '王小虎',
-                note: '上海市普陀区金沙江路 1516 弄'
             }],
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
             currentPageSize: 2,
@@ -111,6 +103,12 @@ export default {
         },
         handleEdit(index, row) {
             console.log(index, row)
+            this.$router.push({
+                name: 'editClass',
+                query: {
+                    classId: row.id
+                }
+            })
         },
         handleDelete() {
 
@@ -144,7 +142,7 @@ export default {
             queryClass(sendData).then((res) => {
                 console.log('query class success', res)
                 if (res.code === 10000) {
-                    this.showMsg(false, '查询成功')
+                    // this.showMsg(1, '查询成功')
                     let data = res.data
                     if (data) {
                         this.total = data.count
@@ -158,12 +156,12 @@ export default {
                     }
                 } else {
                     // 失败
-                    let failedMsg = res.message ? res.message : '服务器异常'
-                    this.showMsg(true, '查询成功', failedMsg)
+                    let failedMsg = res.message ? res.message : '查询失败,服务器异常'
+                    this.showMsg(4, failedMsg)
                 }
             }).catch(err => {
                 console.log('query class success', err)
-                this.showMsg(true, '查询失败', '服务器异常')
+                this.showMsg(4, '查询失败,服务器异常')
             })
         },
         initData() {
@@ -178,22 +176,6 @@ export default {
                 })
             }
             this.query()
-        },
-        showMsg(isError, title, msg) {
-            let msgObj = {
-                duration: 2000
-            }
-            if (title) {
-                msgObj.title = title
-            }
-            if (msg) {
-                msgObj.message = msg
-            }
-            if (isError) {
-                this.$notify.error(msgObj)
-            } else {
-                this.$notify.success(msgObj)
-            }
         }
     },
     mounted() {
