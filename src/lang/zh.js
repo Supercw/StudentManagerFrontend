@@ -52,7 +52,12 @@ export default {
         class: '班级管理',
         createClass: '创建班级 ',
         queryClass: '查询班级',
-        editClass: '编辑班级'
+        editClass: '编辑班级',
+        // 自定义学生   //
+        student: '学生管理',
+        createStudent: '采集学生信息',
+        queryStudent: '查询学生信息',
+        editStudent: '修改学生信息'
 
     },
     navbar: {

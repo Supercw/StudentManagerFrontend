@@ -38,6 +38,11 @@ const createClass = r => require.ensure([], () => r(require('../page/class/creat
 const editClass = r => require.ensure([], () => r(require('../page/class/editClass')), 'editClass')
 const queryClass = r => require.ensure([], () => r(require('../page/class/queryClass')), 'queryClass')
 
+// 学生管理
+const createStudent = r => require.ensure([], () => r(require('../page/student/createStudent')), 'createStudent')
+const editStudent = r => require.ensure([], () => r(require('../page/student/editStudent')), 'editStudent')
+const queryStudent = r => require.ensure([], () => r(require('../page/student/queryStudent')), 'queryStudent')
+
 
 /**
  * 配置详解
@@ -108,6 +113,7 @@ export const asyncRouterMap = [{
     path: '/documentation',
     component: layout,
     redirect: '/documentation/index',
+    hidden: true,
     children: [{
         path: 'index',
         component: documentation,
@@ -131,12 +137,14 @@ export const asyncRouterMap = [{
     path: '/icon',
     component: layout,
     redirect: 'noredirect',
+    hidden: true,
     children: [
         { path: 'index', component: svgIcons, name: 'icon', meta: { title: 'icons', icon: 'icon', noCache: true } }
     ]
 }, {
     path: '/class',
     component: layout,
+    redirect: 'noredirect',
     name: 'class',
     meta: {
         title: 'class',
@@ -157,6 +165,31 @@ export const asyncRouterMap = [{
         component: editClass,
         name: 'editClass',
         meta: { title: 'editClass', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/student',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'student',
+    meta: {
+        title: 'student',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryStudent',
+        component: queryStudent,
+        name: 'queryStudent',
+        meta: { title: 'queryStudent', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createStudent',
+        component: createStudent,
+        name: 'createStudent',
+        meta: { title: 'createStudent', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editStudent',
+        component: editStudent,
+        name: 'editStudent',
+        meta: { title: 'editStudent', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '*',
