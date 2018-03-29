@@ -80,7 +80,7 @@ service.interceptors.response.use(
             result.error = response.data.error ? response.data.error : ''
         }
         closeElementLoading()
-        console.log('result', result)
+        // console.log('result', result)
         return result
     },
     error => {
@@ -96,7 +96,7 @@ const closeElementLoading = () => {
 }
 
 const showElementLoading = () => {
-    console.log('isShowElementLoading', isShowElementLoading)
+    // console.log('isShowElementLoading', isShowElementLoading)
     if (isShowElementLoading) {
         elementLoadingObj = Loading.service({ fullscreen: true, text: '正在加载中...' })
     }

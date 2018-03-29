@@ -5,6 +5,7 @@
             <span class="title">查询班级</span>
             <div class="operation">
                 <el-button type="primary" size="small">返回</el-button>
+                <el-button type="primary" size="small" @click="handlerCreate">创建班级</el-button>
             </div>
         </el-header>
         <section class="custom-line"></section>
@@ -15,7 +16,7 @@
                         <el-input v-model="queryClassForm.name" placeholder="请输入班级名"></el-input>
                     </el-form-item>
                     <el-form-item label="所属院系" prop="department">
-                        <el-select v-model="queryClassForm.department" placeholder="请选择院系">
+                        <el-select v-model="queryClassForm.department" clearable placeholder="请选择院系">
                             <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
                         </el-select>
                     </el-form-item>
@@ -29,6 +30,7 @@
                 <el-table :data="tableData" border style="width: 100%;" stripe>
                     <el-table-column type="index" width="50"></el-table-column>
                     <el-table-column prop="name" label="名字" width="180"></el-table-column>
+                    <el-table-column prop="department" label="院系" width="180"></el-table-column>
                     <el-table-column prop="note" label="备注"></el-table-column>
                     <el-table-column prop="createdAt" label="创建日期" width="180"></el-table-column>
                     <el-table-column label="操作" width="180">
@@ -42,7 +44,7 @@
                 </el-table>
             </section>
             <section class="queryPagination">
-                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="this.pageSizes" layout="total, sizes,prev, pager, next, jumper" :total="this.total"></el-pagination>
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage" :page-sizes="this.pageSizes" :page-size="this.currentPageSize" layout="total, sizes,prev, pager, next, jumper" :total="this.total"></el-pagination>
             </section>
         </el-main>
     </el-container>
@@ -50,6 +52,9 @@
 </template>
 
 <script>
+import { queryClass } from '../../../service/class'
+import _ from 'lodash'
+import moment from 'moment'
 export default {
     name: 'queryClass',
     data() {
@@ -80,7 +85,8 @@ export default {
                 name: '王小虎',
                 note: '上海市普陀区金沙江路 1516 弄'
             }],
-            pageSizes: [10], // 每页显示的条数,可选
+            pageSizes: [2, 5, 10], // 每页显示的条数,可选
+            currentPageSize: 2,
             total: 100, // 总条数
             currentPage: 1 // 当前页
 
@@ -89,6 +95,16 @@ export default {
     methods: {
         handlerQuery() {
             console.log('queryClassForm', this.queryClassForm)
+            if (this.currentPage !== 1) {
+                this.currentPage = 1
+            } else {
+                this.query()
+            }
+        },
+        handlerCreate() {
+            this.$router.push({
+                name: 'createClass'
+            })
         },
         handlerReset(formName) {
             this.$refs[formName].resetFields()
@@ -101,10 +117,54 @@ export default {
         },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
+            this.currentPageSize = val
+            if (this.currentPage !== 1) {
+                this.currentPage = 1
+            } else {
+                this.query()
+            }
         },
         handleCurrentChange(val) {
             console.log(`当前页: ${val}`);
             this.currentPage = val
+            this.query()
+        },
+        query() {
+            let sendData = {
+                currentPage: this.currentPage,
+                pageSize: this.currentPageSize
+            }
+            if (this.queryClassForm.name) {
+                sendData.name = this.queryClassForm.name
+            }
+            if (this.queryClassForm.department) {
+                sendData.department = this.queryClassForm.department
+            }
+            console.log('sendData', sendData)
+            queryClass(sendData).then((res) => {
+                console.log('query class success', res)
+                if (res.code === 10000) {
+                    this.showMsg(false, '查询成功')
+                    let data = res.data
+                    if (data) {
+                        this.total = data.count
+                        if (data.rows) {
+                            _.map(data.rows, (item) => {
+                                item.createdAt = moment(item.createdAt).format('YYYY-MM-DD')
+                                return item
+                            })
+                            this.tableData = data.rows
+                        }
+                    }
+                } else {
+                    // 失败
+                    let failedMsg = res.message ? res.message : '服务器异常'
+                    this.showMsg(true, '查询成功', failedMsg)
+                }
+            }).catch(err => {
+                console.log('query class success', err)
+                this.showMsg(true, '查询失败', '服务器异常')
+            })
         },
         initData() {
             if (this.$store.getters.departments.length > 0) {
@@ -116,6 +176,23 @@ export default {
                 }).catch((error) => {
                     console.log('GetDepartmentsData', error)
                 })
+            }
+            this.query()
+        },
+        showMsg(isError, title, msg) {
+            let msgObj = {
+                duration: 2000
+            }
+            if (title) {
+                msgObj.title = title
+            }
+            if (msg) {
+                msgObj.message = msg
+            }
+            if (isError) {
+                this.$notify.error(msgObj)
+            } else {
+                this.$notify.success(msgObj)
             }
         }
     },
