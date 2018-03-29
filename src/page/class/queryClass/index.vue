@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { queryClass } from '../../../service/class'
+import { queryClass, deleteClassById } from '../../../service/class'
 import _ from 'lodash'
 import moment from 'moment'
 export default {
@@ -78,8 +78,8 @@ export default {
                 note: '上海市普陀区金沙江路 1517 弄'
             }],
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
-            currentPageSize: 2,
-            total: 100, // 总条数
+            currentPageSize: 5,
+            total: 0, // 总条数
             currentPage: 1 // 当前页
 
         }
@@ -110,8 +110,21 @@ export default {
                 }
             })
         },
-        handleDelete() {
-
+        handleDelete(index, row) {
+            console.log('row.id', row.id)
+            deleteClassById({ classId: row.id }).then((res) => {
+                console.log('delete class success', res)
+                if (res.code === 10000) {
+                    this.showMsg(1, '删除成功')
+                    this.query()
+                } else {
+                    let failedMsg = res.message ? res.message : '删除失败,服务器异常'
+                    this.showMsg(4, failedMsg)
+                }
+            }).catch(err => {
+                console.log('delete class err', err)
+                this.showMsg(4, '删除失败,服务器异常')
+            })
         },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
