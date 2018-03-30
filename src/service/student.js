@@ -2,7 +2,7 @@
 import fetch from '../config/axios'
 
 // 创建班级
-export const createClass = (postData) => fetch('/class', postData, 'POST', true)
+export const createStudent = (postData) => fetch('/student', postData, 'POST', true)
 
 // 分页查询班级
 export const queryClass = (data) => fetch('/class/count', data, 'GET', true)
