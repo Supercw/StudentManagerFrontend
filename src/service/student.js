@@ -15,5 +15,9 @@ export const queryClassById = (paramData, data) => fetch(`/class/${paramData.cla
 
 export const deleteStudentById = (paramData, data) => fetch(`/student/${paramData.studentId}`, data, 'DELETE', true)
 
+
+// 根据ID获取数据
+export const queryStudentById = (paramData, data) => fetch(`/student/${paramData.studentId}/class`, data, 'GET', true)
+
 // 更新班级
 export const updateClass = (paramData, postData) => fetch(`/class/${paramData.classId}`, postData, 'PUT', true)

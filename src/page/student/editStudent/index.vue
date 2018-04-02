@@ -277,6 +277,7 @@ export default {
             // this.mergeData()
         },
         query() {
+            this.routerParams.studentId = 2
             if (!this.routerParams.studentId) {
                 this.showMsg(4, '学生ID不存在')
                 return
@@ -323,6 +324,7 @@ export default {
         },
         initData() {
             this.queryDepartments()
+            this.query()
         },
         submitData() {
 
