@@ -14,7 +14,7 @@
                     <el-form-item label="班级ID" prop="id" class="m20">
                         <el-input v-model="orginData.id" disabled></el-input>
                     </el-form-item>
-                    <el-form-item label="班级名称" prop="name" class="m35">
+                    <el-form-item label="班级名字" prop="name" class="m35">
                         <el-input v-model="editClassForm.name"></el-input>
                     </el-form-item>
                     <el-form-item label="所属院系" prop="department" class="m35">

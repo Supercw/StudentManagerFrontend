@@ -2,37 +2,46 @@
 <div class="queryClassContainer">
     <el-container>
         <el-header style="" class="head">
-            <span class="title">查询班级</span>
+            <span class="title">查询学生</span>
             <div class="operation">
                 <!-- <el-button type="primary" size="small">返回</el-button> -->
-                <el-button type="primary" size="small" @click="handlerCreate">创建班级</el-button>
+                <el-button type="primary" size="small" @click="handlerCreate">创建学生</el-button>
             </div>
         </el-header>
         <section class="custom-line"></section>
         <el-main>
             <section class="query">
-                <el-form :inline="true" :model="queryClassForm" ref="queryClassForm" size="small">
-                    <el-form-item label="班级名称" prop="name">
-                        <el-input v-model="queryClassForm.name" placeholder="请输入班级名"></el-input>
+                <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
+                    <el-form-item label="班级名" prop="className">
+                        <el-input v-model="queryForm.className" placeholder="请输入班级名"></el-input>
                     </el-form-item>
-                    <el-form-item label="所属院系" prop="department">
-                        <el-select v-model="queryClassForm.department" clearable placeholder="请选择院系">
+                    <el-form-item label="学号" prop="studentNo">
+                        <el-input v-model="queryForm.studentNo" placeholder="请输入学号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="院系" prop="department">
+                        <el-select v-model="queryForm.department" clearable placeholder="请选择院系">
                             <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="handlerQuery">查询</el-button>
-                        <el-button type="primary" @click="handlerReset('queryClassForm')">重置</el-button>
+                        <el-button type="primary" @click="handlerReset('queryForm')">重置</el-button>
                     </el-form-item>
                 </el-form>
             </section>
             <section class="queryTable">
                 <el-table :data="tableData" border style="width: 100%;" stripe>
                     <el-table-column type="index" width="50"></el-table-column>
-                    <el-table-column prop="name" label="名字" width="180"></el-table-column>
-                    <el-table-column prop="department" label="院系" width="180"></el-table-column>
-                    <el-table-column prop="note" label="备注"></el-table-column>
-                    <el-table-column prop="createdAt" label="创建日期" width="180"></el-table-column>
+                    <el-table-column prop="studentName" label="姓名" width="80"></el-table-column>
+                    <el-table-column prop="genderValue" label="性别" width="80"></el-table-column>
+                    <el-table-column prop="age" label="年龄" width="80"></el-table-column>
+                    <el-table-column prop="birth" label="生日"></el-table-column>
+                    <el-table-column prop="idCardNo" label="身份证号"></el-table-column>
+                    <el-table-column prop="studentNo" label="学号"></el-table-column>
+                    <el-table-column prop="className" label="班级"></el-table-column>
+                    <el-table-column prop="professional" label="专业"></el-table-column>
+                    <el-table-column prop="studentDepartment" label="院系"></el-table-column>
+                    <el-table-column prop="createTime" label="创建日期"></el-table-column>
                     <el-table-column label="操作" width="180">
                         <template slot-scope="scope">
                             <section class="table-op">
@@ -52,16 +61,17 @@
 </template>
 
 <script>
-import { queryClass, deleteClassById } from '../../../service/class'
+import { queryStudent, deleteStudentById } from '../../../service/student'
 import _ from 'lodash'
 import moment from 'moment'
 export default {
     name: 'queryClass',
     data() {
         return {
-            queryClassForm: {
-                name: '',
-                department: ''
+            queryForm: {
+                className: '',
+                department: '',
+                studentNo: ''
             },
             departmentList: [
                 '计算机学院',
@@ -86,7 +96,7 @@ export default {
     },
     methods: {
         handlerQuery() {
-            console.log('queryClassForm', this.queryClassForm)
+            console.log('queryForm', this.queryForm)
             if (this.currentPage !== 1) {
                 this.currentPage = 1
             } else {
@@ -95,7 +105,7 @@ export default {
         },
         handlerCreate() {
             this.$router.push({
-                name: 'createClass'
+                name: 'createStudent'
             })
         },
         handlerReset(formName) {
@@ -104,16 +114,16 @@ export default {
         handleEdit(index, row) {
             console.log(index, row)
             this.$router.push({
-                name: 'editClass',
+                name: 'editStudent',
                 query: {
                     classId: row.id
                 }
             })
         },
         handleDelete(index, row) {
-            console.log('row.id', row.id)
-            deleteClassById({ classId: row.id }).then((res) => {
-                console.log('delete class success', res)
+            console.log('row.id', row.studentId)
+            deleteStudentById({ studentId: row.studentId }).then((res) => {
+                console.log('delete success', res)
                 if (res.code === 10000) {
                     this.showMsg(1, '删除成功')
                     this.query()
@@ -122,7 +132,7 @@ export default {
                     this.showMsg(4, failedMsg)
                 }
             }).catch(err => {
-                console.log('delete class err', err)
+                console.log('delete err', err)
                 this.showMsg(4, '删除失败,服务器异常')
             })
         },
@@ -145,14 +155,17 @@ export default {
                 currentPage: this.currentPage,
                 pageSize: this.currentPageSize
             }
-            if (this.queryClassForm.name) {
-                sendData.name = this.queryClassForm.name
+            if (this.queryForm.className) {
+                sendData.className = this.queryForm.className
             }
-            if (this.queryClassForm.department) {
-                sendData.department = this.queryClassForm.department
+            if (this.queryForm.department) {
+                sendData.studentDepartment = this.queryForm.department
+            }
+            if (this.queryForm.studentNo) {
+                sendData.studentNo = this.queryForm.studentNo
             }
             console.log('sendData', sendData)
-            queryClass(sendData).then((res) => {
+            queryStudent(sendData).then((res) => {
                 console.log('query class success', res)
                 if (res.code === 10000) {
                     // this.showMsg(1, '查询成功')
@@ -161,7 +174,8 @@ export default {
                         this.total = data.count
                         if (data.rows) {
                             _.map(data.rows, (item) => {
-                                item.createdAt = moment(item.createdAt).format('YYYY-MM-DD')
+                                item.createTime = moment(item.createTime).format('YYYY-MM-DD')
+                                item.birth = moment(item.birth).format('YYYY-MM-DD')
                                 return item
                             })
                             this.tableData = data.rows

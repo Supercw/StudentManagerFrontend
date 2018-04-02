@@ -19,7 +19,7 @@
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="性别" prop="gender">
-                                <el-radio-group v-model="createForm.gender">
+                                <el-radio-group v-model="createForm.gender" disabled checked>
                                     <el-radio label="男"></el-radio>
                                     <el-radio label="女"></el-radio>
                                 </el-radio-group>
@@ -34,14 +34,14 @@
                         </el-col>
                         <el-col :span="12">
                             <el-form-item label="年龄" prop="age" class="">
-                                <el-input v-model.number="createForm.age"></el-input>
+                                <el-input v-model.number="createForm.age" readonly></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row style="margin-top:15px;">
                         <el-col :span="12">
                             <el-form-item label="出生日期" prop="birth">
-                                <el-date-picker type="date" placeholder="请选择出生日期" v-model="createForm.birth"></el-date-picker>
+                                <el-date-picker type="date" placeholder="请选择出生日期" v-model="createForm.birth" readonly></el-date-picker>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
@@ -113,6 +113,7 @@
 import { queryClassNoLoading } from '../../../service/class'
 import { createStudent } from '../../../service/student'
 import { converValueToType } from '../../../config/gender'
+import { isCardID } from '../../../utils/createFormUtil'
 import _ from 'lodash'
 // import moment from 'moment'
 export default {
@@ -121,7 +122,7 @@ export default {
     data() {
         const checkAge = (rule, value, callback) => {
             if (!value) {
-                return callback(new Error('年龄不能为空'));
+                return callback(new Error('年龄不能为空,请输入身份证号'));
             }
             if (!Number.isInteger(value)) {
                 callback(new Error('请输入数字值'));
@@ -133,11 +134,31 @@ export default {
                 }
             }
         };
+        const checkIdCard = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('身份证号不能为空'));
+            }
+            let res = isCardID(value)
+            if (typeof res === 'string') {
+                callback(new Error(res))
+            } else {
+                this.createForm.birth = res.birth
+                this.createForm.gender = res.gender
+                this.createForm.age = res.age
+                callback()
+            }
+        }
+        const checkBirth = (rule, value, callback) => {
+            if (!value) {
+                return callback(new Error('出生日期不能为空,请输入身份证号'));
+            }
+            callback()
+        }
         return {
             createForm: {
                 name: '',
                 gender: '',
-                idCardNo: '',
+                idCardNo: '429006198010011215',
                 age: '',
                 birth: '',
                 department: '',
@@ -147,13 +168,15 @@ export default {
                 admission: '',
                 address: ''
             },
+            formDisabled: true,
             rules: {
                 name: [
                     { required: true, message: '请输入名字', trigger: 'blur' },
                     { min: 2, message: '长度需大于3字符', trigger: 'blur' }
                 ],
                 idCardNo: [
-                    { required: true, message: '请输入身份证号', trigger: 'blur' }
+                    // { required: true, message: '请输入身份证号', trigger: 'blur' },
+                    { required: true, validator: checkIdCard, trigger: 'blur' }
                 ],
                 age: [
                     { required: true, validator: checkAge, trigger: 'blur' }
@@ -168,7 +191,7 @@ export default {
                     { required: true, message: '请选择性别', trigger: 'change' }
                 ],
                 birth: [
-                    { type: 'date', required: true, message: '请选择生日', trigger: 'change' }
+                    { type: 'date', required: true, validator: checkBirth, trigger: 'change' }
                 ]
             },
             departmentList: [
@@ -196,6 +219,7 @@ export default {
     },
     methods: {
         submitForm(formName) {
+            console.log('this.createForm.birth----', this.createForm.birth)
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     // console.log('submitForm', this.createForm)
@@ -277,17 +301,18 @@ export default {
                     console.log('GetDepartmentsData', error)
                 })
             }
+            // this.createForm.idCardNo = '429006198010011215'
         },
         queryClassByDepartment() {
             // 根据院系获取班级
-            console.log('queryClassByDepartment => department', this.createForm.department)
+            // console.log('queryClassByDepartment => department', this.createForm.department)
             let sendData = {}
             if (this.createForm.department) {
                 sendData.department = this.createForm.department
             }
             // console.log('sendData', sendData)
             queryClassNoLoading(sendData).then((res) => {
-                console.log('query class success', res)
+                // console.log('query class success', res)
                 if (res.code === 10000) {
                     // this.showMsg(1, '查询成功')
                     if (res.data && res.data.rows) {
@@ -307,7 +332,7 @@ export default {
             })
         },
         queryProfessionalByDepartment() {
-            console.log('queryProfessionalByDepartment =>', this.createForm.department)
+            // console.log('queryProfessionalByDepartment =>', this.createForm.department)
             if (this.$store.getters.professionals.length > 0) {
                 this.assemblyProfessional(this.$store.getters.professionals)
             } else {
