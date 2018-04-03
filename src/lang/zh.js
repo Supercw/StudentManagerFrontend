@@ -57,7 +57,12 @@ export default {
         student: '学生管理',
         createStudent: '采集学生信息',
         queryStudent: '查询学生信息',
-        editStudent: '修改学生信息'
+        editStudent: '修改学生信息',
+        // 自定义教师   //
+        teacher: '教师管理',
+        createTeacher: '采集教师信息',
+        queryTeacher: '查询教师信息',
+        editTeacher: '修改教师信息'
 
     },
     navbar: {

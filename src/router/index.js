@@ -43,6 +43,11 @@ const createStudent = r => require.ensure([], () => r(require('../page/student/c
 const editStudent = r => require.ensure([], () => r(require('../page/student/editStudent')), 'editStudent')
 const queryStudent = r => require.ensure([], () => r(require('../page/student/queryStudent')), 'queryStudent')
 
+// 教师管理
+const createTeacher = r => require.ensure([], () => r(require('../page/teacher/createTeacher')), 'createTeacher')
+const editTeacher = r => require.ensure([], () => r(require('../page/teacher/editTeacher')), 'editTeacher')
+const queryTeacher = r => require.ensure([], () => r(require('../page/teacher/queryTeacher')), 'queryTeacher')
+
 
 /**
  * 配置详解
@@ -190,6 +195,31 @@ export const asyncRouterMap = [{
         component: editStudent,
         name: 'editStudent',
         meta: { title: 'editStudent', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/teacher',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'teacher',
+    meta: {
+        title: 'teacher',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryTeacher',
+        component: queryTeacher,
+        name: 'queryTeacher',
+        meta: { title: 'queryTeacher', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createTeacher',
+        component: createTeacher,
+        name: 'createTeacher',
+        meta: { title: 'createTeacher', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editTeacher',
+        component: editTeacher,
+        name: 'editTeacher',
+        meta: { title: 'editTeacher', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '*',

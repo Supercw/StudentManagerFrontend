@@ -7,14 +7,7 @@ export const createStudent = (postData) => fetch('/student', postData, 'POST', t
 // 分页查询班级
 export const queryStudent = (data) => fetch('/student/count', data, 'GET', true)
 
-// 获取院系所有班级,不显示loading
-export const queryClassNoLoading = (data) => fetch('/class/count', data, 'GET', false)
-
-// 根据ID获取数据
-export const queryClassById = (paramData, data) => fetch(`/class/${paramData.classId}`, data, 'GET', true)
-
 export const deleteStudentById = (paramData, data) => fetch(`/student/${paramData.studentId}`, data, 'DELETE', true)
-
 
 // 根据ID获取数据
 export const queryStudentById = (paramData, data) => fetch(`/student/${paramData.studentId}/class`, data, 'GET', true)
