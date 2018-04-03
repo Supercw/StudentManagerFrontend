@@ -2,21 +2,18 @@
 <div class="queryClassContainer">
     <el-container>
         <el-header style="" class="head">
-            <span class="title">查询学生</span>
+            <span class="title">查询教师</span>
             <div class="operation">
                 <!-- <el-button type="primary" size="small">返回</el-button> -->
-                <el-button type="primary" size="small" @click="handlerCreate">创建学生</el-button>
+                <el-button type="primary" size="small" @click="handlerCreate">创建教师</el-button>
             </div>
         </el-header>
         <section class="custom-line"></section>
         <el-main>
             <section class="query">
                 <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
-                    <el-form-item label="班级名" prop="className">
-                        <el-input v-model="queryForm.className" placeholder="请输入班级名"></el-input>
-                    </el-form-item>
-                    <el-form-item label="学号" prop="studentNo">
-                        <el-input v-model="queryForm.studentNo" placeholder="请输入学号"></el-input>
+                    <el-form-item label="编号" prop="teacherNo">
+                        <el-input v-model="queryForm.studentNo" placeholder="请输入编号"></el-input>
                     </el-form-item>
                     <el-form-item label="院系" prop="department">
                         <el-select v-model="queryForm.department" clearable placeholder="请选择院系">
@@ -32,15 +29,14 @@
             <section class="queryTable">
                 <el-table :data="tableData" border style="width: 100%;" stripe>
                     <el-table-column type="index" width="50"></el-table-column>
-                    <el-table-column prop="studentName" label="姓名" width="80"></el-table-column>
-                    <el-table-column prop="genderValue" label="性别" width="80"></el-table-column>
+                    <el-table-column prop="name" label="姓名" width="80"></el-table-column>
+                    <el-table-column prop="gender" label="性别" width="80"></el-table-column>
                     <el-table-column prop="age" label="年龄" width="80"></el-table-column>
                     <el-table-column prop="birth" label="生日"></el-table-column>
                     <el-table-column prop="idCardNo" label="身份证号"></el-table-column>
-                    <el-table-column prop="studentNo" label="学号"></el-table-column>
-                    <el-table-column prop="className" label="班级"></el-table-column>
-                    <el-table-column prop="professional" label="专业"></el-table-column>
-                    <el-table-column prop="studentDepartment" label="院系"></el-table-column>
+                    <el-table-column prop="generateTeacherNo" label="编号"></el-table-column>
+                    <el-table-column prop="title" label="职称"></el-table-column>
+                    <el-table-column prop="department" label="院系"></el-table-column>
                     <el-table-column prop="createTime" label="创建日期"></el-table-column>
                     <el-table-column label="操作" width="180">
                         <template slot-scope="scope">
@@ -61,7 +57,7 @@
 </template>
 
 <script>
-import { queryStudent, deleteStudentById } from '../../../service/student'
+import { queryTeacher, deleteTeacherById } from '../../../service/teacher'
 import _ from 'lodash'
 import moment from 'moment'
 export default {
@@ -69,9 +65,8 @@ export default {
     data() {
         return {
             queryForm: {
-                className: '',
                 department: '',
-                studentNo: ''
+                teacherNo: ''
             },
             departmentList: [
                 '计算机学院',
@@ -122,7 +117,7 @@ export default {
         },
         handleDelete(index, row) {
             console.log('row.id', row.studentId)
-            deleteStudentById({ studentId: row.studentId }).then((res) => {
+            deleteTeacherById({ studentId: row.studentId }).then((res) => {
                 console.log('delete success', res)
                 if (res.code === 10000) {
                     this.showMsg(1, '删除成功')
@@ -155,17 +150,14 @@ export default {
                 currentPage: this.currentPage,
                 pageSize: this.currentPageSize
             }
-            if (this.queryForm.className) {
-                sendData.className = this.queryForm.className
-            }
             if (this.queryForm.department) {
                 sendData.studentDepartment = this.queryForm.department
             }
-            if (this.queryForm.studentNo) {
-                sendData.studentNo = this.queryForm.studentNo
+            if (this.queryForm.teacherNo) {
+                sendData.teacherNo = this.queryForm.teacherNo
             }
             console.log('sendData', sendData)
-            queryStudent(sendData).then((res) => {
+            queryTeacher(sendData).then((res) => {
                 console.log('query class success', res)
                 if (res.code === 10000) {
                     // this.showMsg(1, '查询成功')
