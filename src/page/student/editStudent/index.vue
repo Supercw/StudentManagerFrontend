@@ -58,11 +58,6 @@
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <!-- <el-col :span="12">
-                            <el-form-item label="所学专业2">
-                                <el-cascader :options="professional2Options" @change="handleChangeProfessional2" :show-all-levels="false"></el-cascader>
-                            </el-form-item>
-                        </el-col> -->
                         <el-col :span="12">
                             <el-form-item label="所学专业" prop="professional" class="">
                                 <el-select v-model="createForm.professional" clearable placeholder="请选择专业" @change="handleChangeProfessional">
@@ -91,18 +86,17 @@
                                 <el-input v-model="createForm.address"></el-input>
                             </el-form-item>
                         </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="学号" prop="studentNo" class="">
+                                <el-input v-model="createForm.studentNo" readonly></el-input>
+                            </el-form-item>
+                        </el-col>
                     </el-row>
                     <section class="op" style="width:100%;margin: 30px 0;">
                         <el-button type="primary" plain :disabled="this.disabled" @click="submitForm('createForm')">更新</el-button>
                         <el-button type="success" plain :disabled="this.disabled" @click="reductionForm">还原</el-button>
                         <el-button type="danger" plain :disabled="this.disabled" @click="resetForm('createForm')">重置</el-button>
                     </section>
-                    <!-- <el-form-item class="">
-                        <section class="op">
-                            <el-button plain type="primary" @click="submitForm('createForm')">创建</el-button>
-                            <el-button plain type="danger" @click="resetForm('createForm')">重置</el-button>
-                        </section>
-                    </el-form-item> -->
                 </el-form>
             </section>
         </el-main>
@@ -112,11 +106,11 @@
 
 <script>
 import { queryClassNoLoading } from '../../../service/class'
-import { createStudent, queryStudentById } from '../../../service/student'
+import { updateStudent, queryStudentById } from '../../../service/student'
 import { converValueToType } from '../../../config/gender'
 import { isCardID } from '../../../utils/createFormUtil'
 import _ from 'lodash'
-// import moment from 'moment'
+import moment from 'moment'
 export default {
     name: 'createClass',
     components: {},
@@ -159,17 +153,21 @@ export default {
             createForm: {
                 name: '',
                 gender: '',
-                idCardNo: '429006198010011215',
+                idCardNo: '',
                 age: '',
                 birth: '',
-                department: '计算机学院',
-                className: '计算机18101',
+                department: '',
+                className: '',
                 professional: '',
                 telephone: '',
                 admission: '',
-                address: ''
+                address: '',
+                studentNo: ''
             },
             orginData: {
+
+            },
+            cloneData: {
 
             },
             formDisabled: true,
@@ -231,37 +229,46 @@ export default {
             }
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // console.log('submitForm', this.createForm)
-                    let postData = {
-                        idCardNo: this.createForm.idCardNo,
-                        name: this.createForm.name,
-                        gender: converValueToType(this.createForm.gender),
-                        birth: this.createForm.birth,
-                        telephone: this.createForm.telephone,
-                        admission: this.createForm.admission,
-                        classId: this.createForm.classId,
-                        professional: this.createForm.professional,
-                        department: this.createForm.department,
-                        address: this.createForm.address,
-                        age: this.createForm.age
+                    let sendData = {}
+                    let update = false
+                    _.each(this.cloneData, (value, key) => {
+                        if (this.createForm[key] !== value) {
+                            sendData[key] = this.createForm[key]
+                            update = true
+                        }
+                    })
+                    if (!update) {
+                        this.showMsg(2, '您没有修改任何数据')
+                        return
                     }
-                    console.log('postData', postData)
-                    createStudent(postData).then(res => {
+                    if (sendData.className) {
+                        let classId = this.getClassIdByName(sendData.className)
+                        if (classId) {
+                            sendData.classId = classId
+                        }
+                        delete sendData.className
+                    }
+                    if (sendData.gender) {
+                        sendData.gender = converValueToType(sendData.gender)
+                    }
+                    console.log('sendData', sendData)
+                    let paramData = {
+                        studentId: this.routerParams.studentId
+                    }
+                    updateStudent(paramData, sendData).then(res => {
                         console.log('log success', res)
                         if (res.code === 10000) {
                             // 成功
-                            this.showMsg(1, '创建成功')
-                            this.$router.push({
-                                name: 'queryStudent'
-                            })
+                            this.showMsg(1, '更新成功')
+                            this.back()
                         } else {
                             // 失败
-                            let failedMsg = res.message ? res.message : '创建失败,服务器异常'
+                            let failedMsg = res.message ? res.message : '更新失败,服务器异常'
                             this.showMsg(4, failedMsg)
                         }
                     }).catch(err => {
                         console.log('err', err)
-                        this.showMsg(4, '创建失败,服务器异常')
+                        this.showMsg(4, '更新失败,服务器异常')
                     })
                 } else {
                     console.log('error submit!!');
@@ -269,15 +276,23 @@ export default {
                 }
             });
         },
+        getClassIdByName(className) {
+            let classId = ''
+            _.each(this.classList, (item, index) => {
+                if (item.name === className) {
+                    classId = item.id
+                }
+            })
+            return classId
+        },
         resetForm(formName) {
             this.$refs[formName].resetFields();
         },
         reductionForm() {
             console.log('reductionForm')
-            // this.mergeData()
+            this.mergeData()
         },
         query() {
-            this.routerParams.studentId = 2
             if (!this.routerParams.studentId) {
                 this.showMsg(4, '学生ID不存在')
                 return
@@ -302,11 +317,34 @@ export default {
         mergeData() {
             _.each(this.orginData, (value, key) => {
                 // console.log('mergeData', key)
-                if (this.editClassForm.hasOwnProperty(key)) {
-                    this.editClassForm[key] = value
+                if (this.createForm.hasOwnProperty(key)) {
+                    this.createForm[key] = value
                 }
             })
-            console.log('this.editClassForm', this.editClassForm)
+            if (this.orginData.genderValue) {
+                this.createForm.gender = this.orginData.genderValue
+            }
+            if (this.orginData.studentName) {
+                this.createForm.name = this.orginData.studentName
+            }
+            if (this.orginData.studentDepartment) {
+                this.createForm.department = this.orginData.studentDepartment
+            }
+            if (this.orginData.admission) {
+                this.createForm.admission = moment(this.orginData.admission).format('YYYY-MM-DD')
+            }
+            if (this.createForm.idCardNo) {
+                // 根据身份证设置性别和年龄，生日
+                let res = isCardID(this.createForm.idCardNo)
+                this.createForm.birth = res.birth
+                this.createForm.gender = res.gender
+                this.createForm.age = res.age
+            }
+            console.log('this.createForm', this.createForm)
+            _.each(this.createForm, (value, key) => {
+                this.cloneData[key] = value
+            })
+            console.log('this.cloneData', this.cloneData)
         },
         back() {
             this.$router.go(-1)
@@ -364,7 +402,7 @@ export default {
                     if (res.data && res.data.rows) {
                         this.classList = res.data.rows
                         if (this.classList.length === 0) {
-                            this.createForm.classId = ''
+                            this.createForm.className = ''
                         }
                     }
                 } else {

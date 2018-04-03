@@ -116,7 +116,7 @@ export default {
             this.$router.push({
                 name: 'editStudent',
                 query: {
-                    classId: row.id
+                    studentId: row.studentId
                 }
             })
         },

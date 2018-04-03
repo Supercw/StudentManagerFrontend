@@ -158,7 +158,7 @@ export default {
             createForm: {
                 name: '',
                 gender: '',
-                idCardNo: '429006198010011215',
+                idCardNo: '',
                 age: '',
                 birth: '',
                 department: '',
