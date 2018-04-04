@@ -113,19 +113,27 @@ export default {
         },
         handleDelete(index, row) {
             console.log('row.id', row.id)
-            deleteTeacherById({ teacherId: row.id }).then((res) => {
-                console.log('delete success', res)
-                if (res.code === 10000) {
-                    this.showMsg(1, '删除成功')
-                    this.query()
-                } else {
-                    let failedMsg = res.message ? res.message : '删除失败,服务器异常'
-                    this.showMsg(4, failedMsg)
-                }
-            }).catch(err => {
-                console.log('delete err', err)
-                this.showMsg(4, '删除失败,服务器异常')
-            })
+            this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                deleteTeacherById({ teacherId: row.id }).then((res) => {
+                    console.log('delete success', res)
+                    if (res.code === 10000) {
+                        this.showMsg(1, '删除成功')
+                        this.query()
+                    } else {
+                        let failedMsg = res.message ? res.message : '删除失败,服务器异常'
+                        this.showMsg(4, failedMsg)
+                    }
+                }).catch(err => {
+                    console.log('delete err', err)
+                    this.showMsg(4, '删除失败,服务器异常')
+                })
+            }).catch(() => {
+                this.showMsg(3, '已取消删除')
+            });
         },
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);
