@@ -3,8 +3,13 @@
     <template v-for="item in routes" v-if="isShowRoute(item)">
       <router-link v-if="isOnlySingleRoute(item)" :to="currentRoutePath(item)" :key="currentRouteName(item)">
         <el-menu-item :index="currentRoutePath(item)" :class="{'submenu-title-noDropdown':!isNest}">
-          <svg-icon v-if="hasRouteIcon(item)" :icon-class="currentRouteIcon(item)"></svg-icon>
-          <span v-if="hasRouteTitle(item)">{{generateTitle(currentRouteTitle(item))}}</span>
+            <!-- <svg-icon v-if="hasRouteIcon(item)" :icon-class="currentRouteIcon(item)"></svg-icon>
+            <span slot="title" v-if="hasRouteTitle(item)">{{generateTitle(currentRouteTitle(item))}}</span>
+            <span v-if="hasRouteTitle(item)">{{generateTitle(currentRouteTitle(item))}}</span> -->
+            <section :class="[!isNest ? 'nestActive' : '']">
+                <svg-icon v-if="hasRouteIcon(item)" :icon-class="currentRouteIcon(item)"></svg-icon>
+                <span v-if="hasRouteTitle(item)">{{generateTitle(currentRouteTitle(item))}}</span>
+            </section>
         </el-menu-item>
       </router-link>
 
@@ -13,7 +18,6 @@
               <svg-icon v-if="hasSubRouteIcon(item)" :icon-class="subRouteIcon(item)"></svg-icon>
               <span v-if="hasSubRouteTitle(item)">{{generateTitle(subRouteTitle(item))}}</span>
             </template>
-
     <template v-for="child in item.children" v-if="!child.hidden">
                 <sidebar-item :is-nest="true" class="nest-menu" v-if="hasMulRoute(child)" :routes="[child]" :key="child.path"></sidebar-item>
                 <router-link v-else :to="item.path+'/'+child.path" :key="child.name">
@@ -22,7 +26,7 @@
                         <span v-if="child.meta&&child.meta.title">{{generateTitle(child.meta.title)}}</span>
                     </el-menu-item>
               </router-link>
-            </template>
+    </template>
     </el-submenu>
 
     </template>
@@ -102,3 +106,8 @@ export default {
     }
 }
 </script>
+<style lang="scss" scoped>
+.nestActive {
+    margin-left: -9px;
+}
+</style>

@@ -73,11 +73,17 @@ export const constantRouterMap = [{
     path: '',
     component: layout,
     redirect: 'dashboard',
+    name: 'dashboard',
+    hidden: false,
+    meta: {
+        title: 'dashboard',
+        icon: 'dashboard'
+    },
     children: [{
         path: 'dashboard',
         component: dashboard,
         name: 'dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+        meta: { title: 'dashboard', icon: 'dashboard', noCache: false }
     }]
 }]
 
@@ -119,7 +125,7 @@ export const asyncRouterMap = [{
     path: '/documentation',
     component: layout,
     redirect: '/documentation/index',
-    hidden: true,
+    hidden: false,
     children: [{
         path: 'index',
         component: documentation,
