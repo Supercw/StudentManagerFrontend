@@ -10,7 +10,7 @@ export const queryTeacher = (data) => fetch('/teacher/count', data, 'GET', true)
 export const deleteTeacherById = (paramData, data) => fetch(`/teacher/${paramData.teacherId}`, data, 'DELETE', true)
 
 // 根据ID获取数据
-export const queryTeacherById = (paramData, data) => fetch(`/teacher/${paramData.teacherId}/class`, data, 'GET', true)
+export const queryTeacherById = (paramData, data) => fetch(`/teacher/${paramData.teacherId}`, data, 'GET', true)
 
 // 学生
 export const updateTeacher = (paramData, postData) => fetch(`/teacher/${paramData.teacherId}`, postData, 'PUT', true)

@@ -2,7 +2,7 @@
 <div class="createContainer">
     <el-container>
         <el-header style="" class="head">
-            <span class="title">创建学生档案</span>
+            <span class="title">编辑学生档案</span>
             <div class="operation">
                 <el-button type="primary" size="small" @click="back">返回</el-button>
             </div>

@@ -2,7 +2,7 @@
 <div class="createContainer">
     <el-container>
         <el-header style="" class="head">
-            <span class="title">创建学生档案</span>
+            <span class="title">编辑教师档案</span>
             <div class="operation">
                 <el-button type="primary" size="small" @click="back">返回</el-button>
             </div>
@@ -40,18 +40,6 @@
                     </el-row>
                     <el-row style="margin-top:15px;">
                         <el-col :span="12">
-                            <el-form-item label="出生日期" prop="birth">
-                                <el-date-picker type="date" placeholder="请选择出生日期" v-model="createForm.birth" readonly></el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="电话号码" prop="telephone" class="">
-                                <el-input v-model="createForm.telephone"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row style="margin-top:15px;">
-                        <el-col :span="12">
                             <el-form-item label="所属院系" prop="department" class="" style="">
                                 <el-select v-model="createForm.department" clearable placeholder="请选择院系" @change="handleChangeDepartment">
                                     <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
@@ -59,36 +47,34 @@
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="所学专业" prop="professional" class="">
-                                <el-select v-model="createForm.professional" clearable placeholder="请选择专业" @change="handleChangeProfessional">
-                                    <el-option v-for="(professional,index) in this.professionalList" :label="professional.name" :value="professional.name" :key="index"></el-option>
+                            <el-form-item label="职称" prop="title" class="" style="">
+                                <el-select v-model="createForm.title" clearable placeholder="请选择职称">
+                                    <el-option v-for="(title,index) in this.titleList" :label="title" :value="title" :key="index"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row style="margin-top:15px;">
                         <el-col :span="12">
-                            <el-form-item label="所属班级" prop="className" class="">
-                                <el-select v-model="createForm.className" clearable placeholder="请选择班级">
-                                    <el-option v-for="(classItem,index) in this.classList" :label="classItem.name" :value="classItem.name" :key="index"></el-option>
-                                </el-select>
+                            <el-form-item label="电话号码" prop="telephone" class="">
+                                <el-input v-model="createForm.telephone"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="入学日期" prop="admission">
-                                <el-date-picker type="date" placeholder="请选择入学日期" v-model="createForm.admission"></el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row style="margin-top:15px;">
                         <el-col :span="12">
                             <el-form-item label="居住地址" prop="address" class="">
                                 <el-input v-model="createForm.address"></el-input>
                             </el-form-item>
                         </el-col>
+                    </el-row>
+                    <el-row style="margin-top:15px;">
                         <el-col :span="12">
-                            <el-form-item label="学号" prop="studentNo" class="">
-                                <el-input v-model="createForm.studentNo" readonly></el-input>
+                            <el-form-item label="出生日期" prop="birth">
+                                <el-date-picker type="date" placeholder="请选择出生日期" v-model="createForm.birth" readonly></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="编号" prop="teacherNo" class="">
+                                <el-input v-model="createForm.teacherNo" readonly></el-input>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -105,8 +91,7 @@
 </template>
 
 <script>
-import { queryClassNoLoading } from '../../../service/class'
-import { updateStudent, queryStudentById } from '../../../service/student'
+import { updateTeacher, queryTeacherById } from '../../../service/teacher'
 import { converValueToType } from '../../../config/gender'
 import { isCardID } from '../../../utils/createFormUtil'
 import _ from 'lodash'
@@ -157,12 +142,10 @@ export default {
                 age: '',
                 birth: '',
                 department: '',
-                className: '',
-                professional: '',
+                title: '',
                 telephone: '',
-                admission: '',
                 address: '',
-                studentNo: ''
+                teacherNo: ''
             },
             orginData: {
 
@@ -186,14 +169,14 @@ export default {
                 department: [
                     { required: true, message: '请选择院系', trigger: 'change' }
                 ],
-                professional: [
-                    { required: true, message: '请选择专业', trigger: 'change' }
-                ],
                 gender: [
                     { required: true, message: '请选择性别', trigger: 'change' }
                 ],
                 birth: [
                     { type: 'date', required: true, validator: checkBirth, trigger: 'change' }
+                ],
+                title: [
+                    { required: true, message: '请选择职称', trigger: 'change' }
                 ]
             },
             departmentList: [
@@ -201,30 +184,24 @@ export default {
                 '材料科学与工程学院',
                 '电子信息工程学院'
             ],
-            classList: [],
-            professionalList: [],
+            titleList: [
+                '正高级教师',
+                '高级教师',
+                '一级教师',
+                '二级教师',
+                '三级教师'
+            ],
             routerParams: {
 
             },
-            professional2Options: [{
-                value: 'zhinan',
-                label: '指南',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则'
-                }, {
-                    value: 'daohang',
-                    label: '导航'
-                }]
-            }],
             disabled: true
         }
     },
     methods: {
         submitForm(formName) {
             console.log('createForm.className', this.createForm.className)
-            if (!this.routerParams.studentId) {
-                this.showMsg(2, '学生ID不存在')
+            if (!this.routerParams.teacherId) {
+                this.showMsg(2, '教师ID不存在')
                 return
             }
             this.$refs[formName].validate((valid) => {
@@ -241,21 +218,14 @@ export default {
                         this.showMsg(2, '您没有修改任何数据')
                         return
                     }
-                    if (sendData.className) {
-                        let classId = this.getClassIdByName(sendData.className)
-                        if (classId) {
-                            sendData.classId = classId
-                        }
-                        delete sendData.className
-                    }
                     if (sendData.gender) {
                         sendData.gender = converValueToType(sendData.gender)
                     }
                     console.log('sendData', sendData)
                     let paramData = {
-                        studentId: this.routerParams.studentId
+                        teacherId: this.routerParams.teacherId
                     }
-                    updateStudent(paramData, sendData).then(res => {
+                    updateTeacher(paramData, sendData).then(res => {
                         console.log('log success', res)
                         if (res.code === 10000) {
                             // 成功
@@ -276,15 +246,6 @@ export default {
                 }
             });
         },
-        getClassIdByName(className) {
-            let classId = ''
-            _.each(this.classList, (item, index) => {
-                if (item.name === className) {
-                    classId = item.id
-                }
-            })
-            return classId
-        },
         resetForm(formName) {
             this.$refs[formName].resetFields();
         },
@@ -293,11 +254,11 @@ export default {
             this.mergeData()
         },
         query() {
-            if (!this.routerParams.studentId) {
-                this.showMsg(4, '学生ID不存在')
+            if (!this.routerParams.teacherId) {
+                this.showMsg(4, '教师ID不存在')
                 return
             }
-            queryStudentById({ studentId: this.routerParams.studentId }).then(res => {
+            queryTeacherById({ teacherId: this.routerParams.teacherId }).then(res => {
                 console.log('log success', res)
                 if (res.code === 10000) {
                     // 成功
@@ -324,12 +285,6 @@ export default {
             if (this.orginData.genderValue) {
                 this.createForm.gender = this.orginData.genderValue
             }
-            if (this.orginData.studentName) {
-                this.createForm.name = this.orginData.studentName
-            }
-            if (this.orginData.studentDepartment) {
-                this.createForm.department = this.orginData.studentDepartment
-            }
             if (this.orginData.admission) {
                 this.createForm.admission = moment(this.orginData.admission).format('YYYY-MM-DD')
             }
@@ -351,14 +306,6 @@ export default {
         },
         handleChangeDepartment(value) {
             console.log('handleChangeDepartment', value)
-            this.queryClassByDepartment()
-            this.queryProfessionalByDepartment()
-        },
-        handleChangeProfessional(value) {
-            console.log('handleChangeProfessional', value)
-        },
-        handleChangeProfessional2(value) {
-            console.log('handleChangeProfessional', value)
         },
         initData() {
             this.queryDepartments()
@@ -372,78 +319,16 @@ export default {
             if (this.$store.getters.departments.length > 0) {
                 this.departmentList = this.$store.getters.departments
                 // console.log('departments', this.departmentList)
-                this.queryClassByDepartment()
-                this.queryProfessionalByDepartment()
             } else {
                 // 从服务器获取部门数据
                 this.$store.dispatch('GetDepartmentsData').then((res) => {
                     // console.log('GetDepartmentsData success', res)
                     this.departmentList = this.$store.getters.departments
-                    this.queryClassByDepartment()
-                    this.queryProfessionalByDepartment()
                 }).catch((error) => {
                     console.log('GetDepartmentsData', error)
                 })
             }
             // this.createForm.idCardNo = '429006198010011215'
-        },
-        queryClassByDepartment() {
-            // 根据院系获取班级
-            // console.log('queryClassByDepartment => department', this.createForm.department)
-            let sendData = {}
-            if (this.createForm.department) {
-                sendData.department = this.createForm.department
-            }
-            // console.log('sendData', sendData)
-            queryClassNoLoading(sendData).then((res) => {
-                // console.log('query class success', res)
-                if (res.code === 10000) {
-                    // this.showMsg(1, '查询成功')
-                    if (res.data && res.data.rows) {
-                        this.classList = res.data.rows
-                        if (this.classList.length === 0) {
-                            this.createForm.className = ''
-                        }
-                    }
-                } else {
-                    // 失败
-                    // let failedMsg = res.message ? res.message : '查询失败,服务器异常'
-                    // this.showMsg(4, failedMsg)
-                }
-            }).catch(err => {
-                console.log('query class success', err)
-                // this.showMsg(4, '查询失败,服务器异常')
-            })
-        },
-        queryProfessionalByDepartment() {
-            // console.log('queryProfessionalByDepartment =>', this.createForm.department)
-            if (this.$store.getters.professionals.length > 0) {
-                this.assemblyProfessional(this.$store.getters.professionals)
-            } else {
-                // 从服务器获专业数据
-                this.$store.dispatch('GetProfessionalsData').then((res) => {
-                    console.log('GetProfessionalsData', res)
-                    this.assemblyProfessional(this.$store.getters.professionals)
-                }).catch((error) => {
-                    console.log('GetProfessionalsData', error)
-                })
-            }
-        },
-        assemblyProfessional(professionals) {
-            console.log('assemblyProfessional =>', professionals)
-            let isMatching = false
-            _.each(professionals, item => {
-                if (item.departmentName === this.createForm.department) {
-                    isMatching = true
-                    this.professionalList = item.professionalList
-                }
-            })
-            if (!isMatching) {
-                this.professionalList = []
-            }
-            if (this.professionalList.length === 0) {
-                this.createForm.professional = ''
-            }
         }
     },
     mounted() {
