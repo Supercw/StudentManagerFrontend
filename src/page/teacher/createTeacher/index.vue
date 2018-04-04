@@ -88,7 +88,7 @@
 import { createTeacher } from '../../../service/teacher'
 import { converValueToType } from '../../../config/gender'
 import { isCardID } from '../../../utils/createFormUtil'
-import _ from 'lodash'
+// import _ from 'lodash'
 // import moment from 'moment'
 export default {
     name: 'createClass',

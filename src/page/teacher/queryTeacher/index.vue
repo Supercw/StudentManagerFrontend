@@ -16,7 +16,7 @@
                         <el-input v-model="queryForm.name" placeholder="请输入名字"></el-input>
                     </el-form-item>
                     <el-form-item label="编号" prop="teacherNo">
-                        <el-input v-model="queryForm.studentNo" placeholder="请输入编号"></el-input>
+                        <el-input v-model="queryForm.teacherNo" placeholder="请输入编号"></el-input>
                     </el-form-item>
                     <el-form-item label="院系" prop="department">
                         <el-select v-model="queryForm.department" clearable placeholder="请选择院系">
@@ -112,8 +112,8 @@ export default {
             })
         },
         handleDelete(index, row) {
-            console.log('row.id', row.studentId)
-            deleteTeacherById({ studentId: row.studentId }).then((res) => {
+            console.log('row.id', row.id)
+            deleteTeacherById({ teacherId: row.id }).then((res) => {
                 console.log('delete success', res)
                 if (res.code === 10000) {
                     this.showMsg(1, '删除成功')
