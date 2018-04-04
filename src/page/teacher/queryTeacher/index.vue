@@ -12,6 +12,9 @@
         <el-main>
             <section class="query">
                 <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
+                    <el-form-item label="名字" prop="name">
+                        <el-input v-model="queryForm.name" placeholder="请输入名字"></el-input>
+                    </el-form-item>
                     <el-form-item label="编号" prop="teacherNo">
                         <el-input v-model="queryForm.studentNo" placeholder="请输入编号"></el-input>
                     </el-form-item>
@@ -30,7 +33,7 @@
                 <el-table :data="tableData" border style="width: 100%;" stripe>
                     <el-table-column type="index" width="50"></el-table-column>
                     <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-                    <el-table-column prop="gender" label="性别" width="80"></el-table-column>
+                    <el-table-column prop="genderValue" label="性别" width="80"></el-table-column>
                     <el-table-column prop="age" label="年龄" width="80"></el-table-column>
                     <el-table-column prop="birth" label="生日"></el-table-column>
                     <el-table-column prop="idCardNo" label="身份证号"></el-table-column>
@@ -66,22 +69,15 @@ export default {
         return {
             queryForm: {
                 department: '',
-                teacherNo: ''
+                teacherNo: '',
+                name: ''
             },
             departmentList: [
                 '计算机学院',
                 '材料科学与工程学院',
                 '电子信息工程学院'
             ],
-            tableData: [{
-                createdAt: '2016-05-02',
-                name: '王小虎',
-                note: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                createdAt: '2016-05-04',
-                name: '王小虎',
-                note: '上海市普陀区金沙江路 1517 弄'
-            }],
+            tableData: [],
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
             currentPageSize: 5,
             total: 0, // 总条数
@@ -100,7 +96,7 @@ export default {
         },
         handlerCreate() {
             this.$router.push({
-                name: 'createStudent'
+                name: 'createTeacher'
             })
         },
         handlerReset(formName) {
@@ -155,6 +151,9 @@ export default {
             }
             if (this.queryForm.teacherNo) {
                 sendData.teacherNo = this.queryForm.teacherNo
+            }
+            if (this.queryForm.name) {
+                sendData.name = this.queryForm.name
             }
             console.log('sendData', sendData)
             queryTeacher(sendData).then((res) => {
