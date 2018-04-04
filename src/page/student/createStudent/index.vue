@@ -158,15 +158,15 @@ export default {
             createForm: {
                 name: '',
                 gender: '',
-                idCardNo: '',
+                idCardNo: '4290061990-1001-1016',
                 age: '',
                 birth: '',
                 department: '',
                 classId: '',
                 professional: '',
-                telephone: '',
-                admission: '',
-                address: ''
+                telephone: '13512674780',
+                admission: '2015-07-01',
+                address: '北京市'
             },
             formDisabled: true,
             rules: {

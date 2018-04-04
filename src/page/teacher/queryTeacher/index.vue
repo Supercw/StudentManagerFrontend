@@ -79,7 +79,7 @@ export default {
             ],
             tableData: [],
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
-            currentPageSize: 5,
+            currentPageSize: 10,
             total: 0, // 总条数
             currentPage: 1 // 当前页
 
@@ -147,7 +147,7 @@ export default {
                 pageSize: this.currentPageSize
             }
             if (this.queryForm.department) {
-                sendData.studentDepartment = this.queryForm.department
+                sendData.department = this.queryForm.department
             }
             if (this.queryForm.teacherNo) {
                 sendData.teacherNo = this.queryForm.teacherNo

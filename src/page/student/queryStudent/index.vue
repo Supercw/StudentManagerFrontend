@@ -88,7 +88,7 @@ export default {
                 note: '上海市普陀区金沙江路 1517 弄'
             }],
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
-            currentPageSize: 5,
+            currentPageSize: 10,
             total: 0, // 总条数
             currentPage: 1 // 当前页
 

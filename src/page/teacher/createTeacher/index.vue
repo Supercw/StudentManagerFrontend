@@ -205,7 +205,7 @@ export default {
                             // 成功
                             this.showMsg(1, '创建成功')
                             this.$router.push({
-                                name: 'queryStudent'
+                                name: 'queryTeacher'
                             })
                         } else {
                             // 失败

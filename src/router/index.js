@@ -86,6 +86,7 @@ export const asyncRouterMap = [{
     path: '/example',
     component: layout,
     redirect: 'noredirect',
+    hidden: true,
     name: 'example',
     meta: {
         title: 'example',
@@ -129,6 +130,7 @@ export const asyncRouterMap = [{
     path: '/error',
     component: layout,
     redirect: 'noredirect',
+    hidden: true,
     name: 'errorPages',
     meta: {
         title: 'errorPages',
