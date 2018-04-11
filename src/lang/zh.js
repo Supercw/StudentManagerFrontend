@@ -62,7 +62,12 @@ export default {
         teacher: '教师管理',
         createTeacher: '采集教师信息',
         queryTeacher: '查询教师信息',
-        editTeacher: '修改教师信息'
+        editTeacher: '修改教师信息',
+        // 自定义课程   //
+        course: '课程管理',
+        createArrangCourse: '创建排课表',
+        queryArrangCourse: '查询排课信息',
+        editArrangCourse: '编辑排课信息'
 
     },
     navbar: {

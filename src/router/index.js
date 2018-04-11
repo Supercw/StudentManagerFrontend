@@ -48,6 +48,10 @@ const createTeacher = r => require.ensure([], () => r(require('../page/teacher/c
 const editTeacher = r => require.ensure([], () => r(require('../page/teacher/editTeacher')), 'editTeacher')
 const queryTeacher = r => require.ensure([], () => r(require('../page/teacher/queryTeacher')), 'queryTeacher')
 
+// 课程管理
+const createArrangCourse = r => require.ensure([], () => r(require('../page/course/createArrangCourse')), 'createArrangCourse')
+const editArrangCourse = r => require.ensure([], () => r(require('../page/course/editArrangCourse')), 'editArrangCourse')
+const queryArrangCourse = r => require.ensure([], () => r(require('../page/course/queryArrangCourse')), 'queryArrangCourse')
 
 /**
  * 配置详解
@@ -125,7 +129,7 @@ export const asyncRouterMap = [{
     path: '/documentation',
     component: layout,
     redirect: '/documentation/index',
-    hidden: false,
+    hidden: true,
     children: [{
         path: 'index',
         component: documentation,
@@ -228,6 +232,31 @@ export const asyncRouterMap = [{
         component: editTeacher,
         name: 'editTeacher',
         meta: { title: 'editTeacher', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/course',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'course',
+    meta: {
+        title: 'course',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryArrangCourse',
+        component: queryArrangCourse,
+        name: 'queryArrangCourse',
+        meta: { title: 'queryArrangCourse', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createArrangCourse',
+        component: createArrangCourse,
+        name: 'createArrangCourse',
+        meta: { title: 'createArrangCourse', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editArrangCourse',
+        component: editArrangCourse,
+        name: 'editArrangCourse',
+        meta: { title: 'editArrangCourse', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '*',
