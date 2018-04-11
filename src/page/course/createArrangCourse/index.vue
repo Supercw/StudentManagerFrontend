@@ -2,7 +2,7 @@
 <div class="createContainer">
     <el-container>
         <el-header style="" class="head">
-            <span class="title">创建学生档案</span>
+            <span class="title">创建课程表</span>
             <div class="operation">
                 <el-button type="primary" size="small" @click="back">返回</el-button>
             </div>
@@ -13,58 +13,14 @@
                 <el-form :model="createForm" :rules="rules" ref="createForm" label-width="100px" style="" label-position="right">
                     <el-row style="margin-top:20px;">
                         <el-col :span="12">
-                            <el-form-item label="姓名" prop="name" class="">
-                                <el-input v-model="createForm.name"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="性别" prop="gender">
-                                <el-radio-group v-model="createForm.gender" disabled checked>
-                                    <el-radio label="男"></el-radio>
-                                    <el-radio label="女"></el-radio>
-                                </el-radio-group>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row style="margin-top:15px;">
-                        <el-col :span="12">
-                            <el-form-item label="身份证号" prop="idCardNo" class="">
-                                <el-input v-model="createForm.idCardNo"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="年龄" prop="age" class="">
-                                <el-input v-model.number="createForm.age" readonly></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row style="margin-top:15px;">
-                        <el-col :span="12">
-                            <el-form-item label="出生日期" prop="birth">
-                                <el-date-picker type="date" placeholder="请选择出生日期" v-model="createForm.birth" readonly></el-date-picker>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="12">
-                            <el-form-item label="电话号码" prop="telephone" class="">
-                                <el-input v-model="createForm.telephone"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row style="margin-top:15px;">
-                        <el-col :span="12">
-                            <el-form-item label="所属院系" prop="department" class="" style="">
+                            <el-form-item label="排课院系" prop="department" class="" style="">
                                 <el-select v-model="createForm.department" clearable placeholder="请选择院系" @change="handleChangeDepartment">
                                     <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
-                        <!-- <el-col :span="12">
-                            <el-form-item label="所学专业2">
-                                <el-cascader :options="professional2Options" @change="handleChangeProfessional2" :show-all-levels="false"></el-cascader>
-                            </el-form-item>
-                        </el-col> -->
                         <el-col :span="12">
-                            <el-form-item label="所学专业" prop="professional" class="">
+                            <el-form-item label="排课专业" prop="professional" class="">
                                 <el-select v-model="createForm.professional" clearable placeholder="请选择专业" @change="handleChangeProfessional">
                                     <el-option v-for="(professional,index) in this.professionalList" :label="professional.name" :value="professional.name" :key="index"></el-option>
                                 </el-select>
@@ -73,22 +29,63 @@
                     </el-row>
                     <el-row style="margin-top:15px;">
                         <el-col :span="12">
-                            <el-form-item label="所属班级" prop="classId" class="">
-                                <el-select v-model="createForm.classId" clearable placeholder="请选择班级">
-                                    <el-option v-for="(classItem,index) in this.classList" :label="classItem.name" :value="classItem.id" :key="index"></el-option>
+                            <el-form-item label="课程名字" prop="courseName" class="" style="">
+                                <el-select v-model="createForm.courseName" clearable placeholder="请选择课程" @change="handleChangeCourse">
+                                    <el-option v-for="(courseName,index) in this.courseList" :label="courseName" :value="courseName" :key="index"></el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                         <el-col :span="12">
-                            <el-form-item label="入学日期" prop="admission">
-                                <el-date-picker type="date" placeholder="请选择入学日期" v-model="createForm.admission"></el-date-picker>
+                            <el-form-item label="排课班级" prop="classId" class="">
+                                <el-select v-model="createForm.classId" clearable placeholder="请选择班级" :disabled="this.formDisabled">
+                                    <el-option v-for="(classItem,index) in this.classList" :label="classItem.name" :value="classItem.id" :key="index"></el-option>
+                                </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row style="margin-top:15px;">
                         <el-col :span="12">
-                            <el-form-item label="居住地址" prop="address" class="">
+                            <el-form-item label="授课教师" prop="teacherId" class="">
+                                <el-select v-model="createForm.teacherId" clearable placeholder="请选择授课教师" :disabled="this.formDisabled">
+                                    <el-option v-for="(teacherItem,index) in this.teacherList" :label="teacherItem.name" :value="teacherItem.id" :key="index"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="排课学期" prop="semester" class="">
+                                <el-input v-model="createForm.semester"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row style="margin-top:15px;">
+                        <el-col :span="12">
+                            <el-form-item label="开课日期" prop="startTime">
+                                <el-date-picker type="date" placeholder="请选择开课时间" v-model="createForm.startTime"></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="结课日期" prop="endTime">
+                                <el-date-picker type="date" placeholder="请选择结课时间" v-model="createForm.endTime"></el-date-picker>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row style="margin-top:15px;">
+                        <el-col :span="12">
+                            <el-form-item label="上课地点" prop="address" class="">
                                 <el-input v-model="createForm.address"></el-input>
+                            </el-form-item>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-form-item label="课程学分" prop="courseCredits" class="">
+                                <el-input v-model="createForm.courseCredits"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row style="margin-top:15px;">
+                        <el-col :span="12">
+                            <el-form-item label="上课时间" prop="time">
+                                <!-- <el-date-picker type="time" placeholder="请选择上课时间" v-model="createForm.time"></el-date-picker> -->
+                                <el-time-picker is-range v-model="createForm.time" range-separator="-" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="请选择上课时间"></el-time-picker>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -96,12 +93,6 @@
                         <el-button plain type="primary" @click="submitForm('createForm')">创建</el-button>
                         <el-button plain type="danger" @click="resetForm('createForm')">重置</el-button>
                     </section>
-                    <!-- <el-form-item class="">
-                        <section class="op">
-                            <el-button plain type="primary" @click="submitForm('createForm')">创建</el-button>
-                            <el-button plain type="danger" @click="resetForm('createForm')">重置</el-button>
-                        </section>
-                    </el-form-item> -->
                 </el-form>
             </section>
         </el-main>
@@ -111,87 +102,62 @@
 
 <script>
 import { queryClassNoLoading } from '../../../service/class'
-import { createStudent } from '../../../service/student'
-import { converValueToType } from '../../../config/gender'
-import { isCardID } from '../../../utils/createFormUtil'
+import { queryTeacherNoLoading } from '../../../service/teacher'
+import { createArrangCourse } from '../../../service/course'
 import _ from 'lodash'
 // import moment from 'moment'
 export default {
     name: 'createClass',
     components: {},
     data() {
-        const checkAge = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('年龄不能为空,请输入身份证号'));
-            }
-            if (!Number.isInteger(value)) {
-                callback(new Error('请输入数字值'));
-            } else {
-                if (value < 0 || value > 150) {
-                    callback(new Error('必须在0~150岁之间'));
-                } else {
-                    callback();
-                }
-            }
-        };
-        const checkIdCard = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('身份证号不能为空'));
-            }
-            let res = isCardID(value)
-            if (typeof res === 'string') {
-                callback(new Error(res))
-            } else {
-                this.createForm.birth = res.birth
-                this.createForm.gender = res.gender
-                this.createForm.age = res.age
-                callback()
-            }
-        }
-        const checkBirth = (rule, value, callback) => {
-            if (!value) {
-                return callback(new Error('出生日期不能为空,请输入身份证号'));
-            }
-            callback()
-        }
         return {
             createForm: {
-                name: '',
-                gender: '',
-                idCardNo: '4290061990-1001-1016',
-                age: '',
-                birth: '',
                 department: '',
-                classId: '',
                 professional: '',
-                telephone: '13512674780',
-                admission: '2015-07-01',
-                address: '北京市'
+                courseName: '',
+                classId: '',
+                teacherId: '',
+                address: '教学楼201室',
+                time: '',
+                startTime: '',
+                endTime: '',
+                semester: '2016上学期',
+                courseCredits: '10'
             },
             formDisabled: true,
             rules: {
-                name: [
-                    { required: true, message: '请输入名字', trigger: 'blur' },
-                    { min: 2, message: '长度需大于3字符', trigger: 'blur' }
-                ],
-                idCardNo: [
-                    // { required: true, message: '请输入身份证号', trigger: 'blur' },
-                    { required: true, validator: checkIdCard, trigger: 'blur' }
-                ],
-                age: [
-                    { required: true, validator: checkAge, trigger: 'blur' }
-                ],
                 department: [
                     { required: true, message: '请选择院系', trigger: 'change' }
+                ],
+                courseName: [
+                    { required: true, message: '请输入名字', trigger: 'blur' }
+                ],
+                classId: [
+                    { required: true, message: '请选择授课班级', trigger: 'blur' }
+                ],
+                teacherId: [
+                    { required: true, message: '请选择授课教师', trigger: 'blur' }
                 ],
                 professional: [
                     { required: true, message: '请选择专业', trigger: 'change' }
                 ],
-                gender: [
-                    { required: true, message: '请选择性别', trigger: 'change' }
+                address: [
+                    { required: true, message: '请输入上课地点', trigger: 'blur' }
                 ],
-                birth: [
-                    { type: 'date', required: true, validator: checkBirth, trigger: 'change' }
+                time: [
+                    { required: true, message: '请输入上课时间', trigger: 'blur' }
+                ],
+                startTime: [
+                    { required: true, message: '请选择开课日期', trigger: 'change' }
+                ],
+                endTime: [
+                    { required: true, message: '请选择结课日期', trigger: 'change' }
+                ],
+                semester: [
+                    { required: true, message: '请输入学期', trigger: 'change' }
+                ],
+                courseCredits: [
+                    { required: true, message: '请输入学分', trigger: 'change' }
                 ]
             },
             departmentList: [
@@ -201,43 +167,30 @@ export default {
             ],
             classList: [],
             professionalList: [],
-            routerParams: {
-
-            },
-            professional2Options: [{
-                value: 'zhinan',
-                label: '指南',
-                children: [{
-                    value: 'shejiyuanze',
-                    label: '设计原则'
-                }, {
-                    value: 'daohang',
-                    label: '导航'
-                }]
-            }]
+            courseList: [],
+            teacherList: [],
+            routerParams: {}
         }
     },
     methods: {
         submitForm(formName) {
-            console.log('this.createForm.birth----', this.createForm.birth)
             this.$refs[formName].validate((valid) => {
                 if (valid) {
-                    // console.log('submitForm', this.createForm)
                     let postData = {
-                        idCardNo: this.createForm.idCardNo,
-                        name: this.createForm.name,
-                        gender: converValueToType(this.createForm.gender),
-                        birth: this.createForm.birth,
-                        telephone: this.createForm.telephone,
-                        admission: this.createForm.admission,
-                        classId: this.createForm.classId,
-                        professional: this.createForm.professional,
                         department: this.createForm.department,
+                        professional: this.createForm.professional,
+                        courseName: this.createForm.courseName,
+                        classId: this.createForm.classId,
+                        teacherId: this.createForm.teacherId,
                         address: this.createForm.address,
-                        age: this.createForm.age
+                        time: this.createForm.time,
+                        startTime: this.createForm.startTime,
+                        endTime: this.createForm.endTime,
+                        semester: this.createForm.semester,
+                        courseCredits: this.createForm.courseCredits
                     }
                     console.log('postData', postData)
-                    createStudent(postData).then(res => {
+                    createArrangCourse(postData).then(res => {
                         console.log('log success', res)
                         if (res.code === 10000) {
                             // 成功
@@ -268,14 +221,34 @@ export default {
         },
         handleChangeDepartment(value) {
             console.log('handleChangeDepartment', value)
+            if (this.createForm.department) {
+                this.formDisabled = false
+            } else {
+                this.formDisabled = true
+                this.classList = []
+                this.createForm.classId = ''
+                this.teacherList = []
+                this.createForm.teacherId = ''
+            }
             this.queryClassByDepartment()
             this.queryProfessionalByDepartment()
+            this.queryTeacherByDepartment()
         },
         handleChangeProfessional(value) {
-            console.log('handleChangeProfessional', value)
+            // console.log('handleChangeProfessional', value, this.professionalList)
+            if (!this.createForm.professional) {
+                this.courseList = []
+                this.createForm.courseName = ''
+                return
+            }
+            _.each(this.professionalList, (professional) => {
+                if (value === professional.name) {
+                    this.courseList = professional.courseList
+                }
+            })
         },
-        handleChangeProfessional2(value) {
-            console.log('handleChangeProfessional', value)
+        handleChangeCourse(value) {
+            console.log('handleChangeCourse', value)
         },
         initData() {
             this.queryDepartments()
@@ -290,6 +263,7 @@ export default {
                 // console.log('departments', this.departmentList)
                 this.queryClassByDepartment()
                 this.queryProfessionalByDepartment()
+                this.queryTeacherByDepartment()
             } else {
                 // 从服务器获取部门数据
                 this.$store.dispatch('GetDepartmentsData').then((res) => {
@@ -297,6 +271,7 @@ export default {
                     this.departmentList = this.$store.getters.departments
                     this.queryClassByDepartment()
                     this.queryProfessionalByDepartment()
+                    this.queryTeacherByDepartment()
                 }).catch((error) => {
                     console.log('GetDepartmentsData', error)
                 })
@@ -331,6 +306,33 @@ export default {
                 // this.showMsg(4, '查询失败,服务器异常')
             })
         },
+        queryTeacherByDepartment() {
+            // 根据院系获取教师列表
+            let sendData = {}
+            if (this.createForm.department) {
+                sendData.department = this.createForm.department
+            }
+            // console.log('sendData', sendData)
+            queryTeacherNoLoading(sendData).then((res) => {
+                console.log('query class success', res)
+                if (res.code === 10000) {
+                    // this.showMsg(1, '查询成功')
+                    if (res.data && res.data.rows) {
+                        this.teacherList = res.data.rows
+                        if (this.teacherList.length === 0) {
+                            this.createForm.teacherId = ''
+                        }
+                    }
+                } else {
+                    // 失败
+                    // let failedMsg = res.message ? res.message : '查询失败,服务器异常'
+                    // this.showMsg(4, failedMsg)
+                }
+            }).catch(err => {
+                console.log('query techer success', err)
+                // this.showMsg(4, '查询失败,服务器异常')
+            })
+        },
         queryProfessionalByDepartment() {
             // console.log('queryProfessionalByDepartment =>', this.createForm.department)
             if (this.$store.getters.professionals.length > 0) {
@@ -359,6 +361,8 @@ export default {
             }
             if (this.professionalList.length === 0) {
                 this.createForm.professional = ''
+                this.courseList = []
+                this.createForm.courseName = ''
             }
         }
     },

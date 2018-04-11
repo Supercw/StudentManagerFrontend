@@ -7,6 +7,9 @@ export const createTeacher = (postData) => fetch('/teacher', postData, 'POST', t
 // 分页查询
 export const queryTeacher = (data) => fetch('/teacher/count', data, 'GET', true)
 
+// 获取院系所有教师,不显示loading
+export const queryTeacherNoLoading = (data) => fetch('/teacher/count', data, 'GET', false)
+
 export const deleteTeacherById = (paramData, data) => fetch(`/teacher/${paramData.teacherId}`, data, 'DELETE', true)
 
 // 根据ID获取数据
