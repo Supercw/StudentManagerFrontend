@@ -118,7 +118,7 @@ export default {
         handleEdit(index, row) {
             console.log(index, row)
             this.$router.push({
-                name: 'editStudent',
+                name: 'editArrangCourse',
                 query: {
                     arrangCourseId: row.arrangCourseId
                 }
