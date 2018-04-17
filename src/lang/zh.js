@@ -67,7 +67,12 @@ export default {
         course: '课程管理',
         createArrangCourse: '创建排课表',
         queryArrangCourse: '查询排课信息',
-        editArrangCourse: '编辑排课信息'
+        editArrangCourse: '编辑排课信息',
+        // 自定义成绩   //
+        score: '成绩管理',
+        createCourseScore: '创建成绩',
+        queryCourseScore: '查询成绩',
+        editCourseScore: '编辑成绩'
 
     },
     navbar: {

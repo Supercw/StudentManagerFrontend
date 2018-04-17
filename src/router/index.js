@@ -53,6 +53,11 @@ const createArrangCourse = r => require.ensure([], () => r(require('../page/cour
 const editArrangCourse = r => require.ensure([], () => r(require('../page/course/editArrangCourse')), 'editArrangCourse')
 const queryArrangCourse = r => require.ensure([], () => r(require('../page/course/queryArrangCourse')), 'queryArrangCourse')
 
+// 成绩管理
+const createCourseScore = r => require.ensure([], () => r(require('../page/score/createCourseScore')), 'createCourseScore')
+const editCourseScore = r => require.ensure([], () => r(require('../page/score/editCourseScore')), 'editCourseScore')
+const queryCourseScore = r => require.ensure([], () => r(require('../page/score/queryCourseScore')), 'queryCourseScore')
+
 /**
  * 配置详解
  * hidden: true 路由不会再侧边栏出现 如401，login等页面(默认 false)
@@ -257,6 +262,31 @@ export const asyncRouterMap = [{
         component: editArrangCourse,
         name: 'editArrangCourse',
         meta: { title: 'editArrangCourse', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/score',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'score',
+    meta: {
+        title: 'score',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryCourseScore',
+        component: queryCourseScore,
+        name: 'queryCourseScore',
+        meta: { title: 'queryCourseScore', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createCourseScore',
+        component: createCourseScore,
+        name: 'createCourseScore',
+        meta: { title: 'createCourseScore', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editCourseScore',
+        component: editCourseScore,
+        name: 'editCourseScore',
+        meta: { title: 'editCourseScore', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '*',
