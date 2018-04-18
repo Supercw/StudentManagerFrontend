@@ -58,21 +58,25 @@ export default {
         createStudent: '采集学生信息',
         queryStudent: '查询学生信息',
         editStudent: '修改学生信息',
-        // 自定义教师   //
+        // 教师管理   //
         teacher: '教师管理',
         createTeacher: '采集教师信息',
         queryTeacher: '查询教师信息',
         editTeacher: '修改教师信息',
-        // 自定义课程   //
+        // 课程管理   //
         course: '课程管理',
         createArrangCourse: '创建排课表',
         queryArrangCourse: '查询排课信息',
         editArrangCourse: '编辑排课信息',
-        // 自定义成绩   //
+        // 成绩管理   //
         score: '成绩管理',
         createCourseScore: '创建成绩',
         queryCourseScore: '查询成绩',
-        editCourseScore: '编辑成绩'
+        editCourseScore: '编辑成绩',
+        // 系统管理   //
+        system: '系统管理',
+        changePassword: '修改密码',
+        resetPassword: '重置密码'
 
     },
     navbar: {
