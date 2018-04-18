@@ -41,14 +41,15 @@ const actions = {
     // 登出
     LogOut({ commit, state }) {
         return new Promise((resolve, reject) => {
-            logout().then(() => {
-                commit('CLEAR_LOGIN_INFO')
-                resolve()
-            }).catch(error => {
-                console.log(error)
-                resolve()
-                // reject(error)
-            })
+            commit('CLEAR_LOGIN_INFO')
+            resolve()
+            // logout().then(() => {
+            //     commit('CLEAR_LOGIN_INFO')
+            //     resolve()
+            // }).catch(error => {
+            //     console.log(error)
+            //     resolve()
+            // })
         })
     }
 }

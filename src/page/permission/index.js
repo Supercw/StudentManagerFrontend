@@ -14,7 +14,7 @@ NProgress.configure({
 }) // NProgress Configuration
 
 function hasPermission(roleType, permissionRoles) {
-    if (roleType === 4) {
+    if (roleType === 4 || roleType === 2 || roleType === 3) {
         return true
     } else {
         return false

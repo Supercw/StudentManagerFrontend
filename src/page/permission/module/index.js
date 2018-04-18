@@ -36,9 +36,19 @@ const actions = {
     }, data) {
         return new Promise(resolve => {
             const roleType = rootState.user.roleType
-            // console.log('GenerateRouterByRoleType', roleType)
+            console.log('GenerateRouterByRoleType', roleType)
             let accessedRouters
             if (roleType === role.type.ADMIN) {
+                // 管理员
+                accessedRouters = asyncRouterMap
+            } else if (roleType === role.type.TEACHER) {
+                // 教师
+                accessedRouters = asyncRouterMap
+            } else if (roleType === role.type.STUDENT) {
+                // 学生
+                accessedRouters = asyncRouterMap
+            } else if (roleType === role.type.ACDEMIC) {
+                // 教务员
                 accessedRouters = asyncRouterMap
             } else {
                 accessedRouters = filterAsyncRouter(asyncRouterMap, roleType)

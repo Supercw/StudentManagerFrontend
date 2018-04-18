@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { createClass } from '../../../service/class'
+import { changePassword } from '../../../service/user'
 export default {
     name: 'createClass',
     components: {},
@@ -71,17 +71,22 @@ export default {
                     console.log('submitForm', this.createForm)
                     let postData = {
                         oldPassword: this.createForm.oldPassword,
-                        newPassword: this.createForm.newPassword,
-                        repeatNewPassword: this.createForm.repeatNewPassword
+                        newPassword: this.createForm.newPassword
                     }
-                    createClass(postData).then(res => {
+                    console.log('userId', this.$store.getters.user.id)
+                    changePassword({ userId: this.$store.getters.user.id }, postData).then(res => {
                         console.log('log success', res)
                         if (res.code === 10000) {
                             // 成功
                             this.showMsg(1, '修改成功')
-                            // this.$router.push({
-                            //     name: 'queryClass'
-                            // })
+                            setTimeout(() => {
+                                this.$store.dispatch('LogOut').then(() => {
+                                    // location.reload()
+                                    this.$router.push({
+                                        name: 'login'
+                                    })
+                                })
+                            }, 500)
                         } else {
                             // 失败
                             let failedMsg = res.message ? res.message : '修改失败,服务器异常'
