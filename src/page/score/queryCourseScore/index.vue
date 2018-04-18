@@ -5,7 +5,7 @@
             <span class="title">查询成绩</span>
             <div class="operation">
                 <!-- <el-button type="primary" size="small">返回</el-button> -->
-                <el-button type="primary" size="small" @click="handlerCreate">创建课程</el-button>
+                <el-button type="primary" size="small" @click="handlerExport">导出成绩</el-button>
             </div>
         </el-header>
         <section class="custom-line"></section>
@@ -14,6 +14,9 @@
                 <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
                     <el-form-item label="班级名" prop="className">
                         <el-input v-model="queryForm.className" placeholder="请输入班级名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="学生名" prop="studentName">
+                        <el-input v-model="queryForm.studentName" placeholder="请输入学生名"></el-input>
                     </el-form-item>
                     <el-form-item label="课程名" prop="courseName">
                         <el-input v-model="queryForm.courseName" placeholder="请输入课程名"></el-input>
@@ -48,8 +51,11 @@
                     <el-table-column label="操作" width="180">
                         <template slot-scope="scope">
                             <section class="table-op">
-                                <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                                <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                <div v-if="checkScore(scope.$index, scope.row)"><el-button size="mini" type="primary" @click="handleCreate(scope.$index, scope.row)">采录成绩</el-button></div>
+                                <div v-else>
+                                    <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                                    <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                </div>
                             </section>
                         </template>
                     </el-table-column>
@@ -75,22 +81,15 @@ export default {
                 className: '',
                 department: '',
                 courseName: '',
-                teacherName: ''
+                teacherName: '',
+                studentName: ''
             },
             departmentList: [
                 '计算机学院',
                 '材料科学与工程学院',
                 '电子信息工程学院'
             ],
-            tableData: [{
-                createdAt: '2016-05-02',
-                name: '王小虎',
-                note: '上海市普陀区金沙江路 1518 弄'
-            }, {
-                createdAt: '2016-05-04',
-                name: '王小虎',
-                note: '上海市普陀区金沙江路 1517 弄'
-            }],
+            tableData: [],
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
             currentPageSize: 10,
             total: 0, // 总条数
@@ -100,38 +99,53 @@ export default {
     },
     methods: {
         handlerQuery() {
-            console.log('queryForm', this.queryForm)
+            // console.log('queryForm', this.queryForm)
             if (this.currentPage !== 1) {
                 this.currentPage = 1
             } else {
                 this.query()
             }
         },
-        handlerCreate() {
+        handleCreate(index, row) {
+            // console.log('handleCreate', index, row)
             this.$router.push({
-                name: 'createArrangCourse'
+                name: 'createCourseScore',
+                query: {
+                    arrangCourseId: row.arrangCourseId,
+                    studentId: row.studentId
+                }
             })
+        },
+        handlerExport() {
+            console.log('handlerExport.....')
+        },
+        checkScore(index, row) {
+            // console.log('handleCreate', index, row)
+            if (row.scoreId) {
+                return false
+            }
+            return true
         },
         handlerReset(formName) {
             this.$refs[formName].resetFields()
         },
         handleEdit(index, row) {
-            console.log(index, row)
+            // console.log(index, row)
             this.$router.push({
-                name: 'editArrangCourse',
+                name: 'editCourseScore',
                 query: {
-                    arrangCourseId: row.arrangCourseId
+                    scoreId: row.scoreId
                 }
             })
         },
         handleDelete(index, row) {
-            console.log('row.id', row.arrangCourseId)
+            console.log('row.scoreId', row.scoreId)
             this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                deleteScoreById({ arrangCourseId: row.arrangCourseId }).then((res) => {
+                deleteScoreById({ scoreId: row.scoreId }).then((res) => {
                     console.log('delete success', res)
                     if (res.code === 10000) {
                         this.showMsg(1, '删除成功')
@@ -178,6 +192,9 @@ export default {
             }
             if (this.queryForm.teacherName) {
                 sendData.teacherName = this.queryForm.teacherName
+            }
+            if (this.queryForm.studentName) {
+                sendData.studentName = this.queryForm.studentName
             }
             console.log('sendData', sendData)
             queryScore(sendData).then((res) => {

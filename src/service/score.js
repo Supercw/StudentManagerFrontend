@@ -11,7 +11,10 @@ export const queryScore = (data) => fetch('/score/count', data, 'GET', true)
 export const deleteScoreById = (paramData, data) => fetch(`/score/${paramData.scoreId}`, data, 'DELETE', true)
 
 // 根据ID获取数据
-export const queryScoreById = (paramData, data) => fetch(`/score/${paramData.scoreId}/view`, data, 'GET', true)
+export const queryScoreByCourseIdStudentId = (paramData, data) => fetch(`/score/${paramData.studentId}/${paramData.arrangCourseId}`, data, 'GET', true)
+
+// 根据ID获取数据
+export const queryScoreByScoreId = (paramData, data) => fetch(`/score/${paramData.scoreId}/view`, data, 'GET', true)
 
 // 更新
 export const updateScore = (paramData, postData) => fetch(`/score/${paramData.scoreId}`, postData, 'PUT', true)
