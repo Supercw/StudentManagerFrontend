@@ -58,6 +58,11 @@ const createCourseScore = r => require.ensure([], () => r(require('../page/score
 const editCourseScore = r => require.ensure([], () => r(require('../page/score/editCourseScore')), 'editCourseScore')
 const queryCourseScore = r => require.ensure([], () => r(require('../page/score/queryCourseScore')), 'queryCourseScore')
 
+// 教务员管理
+const createAcdemic = r => require.ensure([], () => r(require('../page/acdemicDean/createAcdemic')), 'createAcdemic')
+const editAcdemic = r => require.ensure([], () => r(require('../page/acdemicDean/editAcdemic')), 'editAcdemic')
+const queryAcdemic = r => require.ensure([], () => r(require('../page/acdemicDean/queryAcdemic')), 'queryAcdemic')
+
 // 系统管理
 const changePassword = r => require.ensure([], () => r(require('../page/system/changePassword')), 'changePassword')
 const resetPassword = r => require.ensure([], () => r(require('../page/system/resetPassword')), 'resetPassword')
@@ -291,6 +296,31 @@ export const asyncRouterMap = [{
         component: editCourseScore,
         name: 'editCourseScore',
         meta: { title: 'editCourseScore', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/acdemicDean',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'acdemicDean',
+    meta: {
+        title: 'acdemicDean',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryAcdemic',
+        component: queryAcdemic,
+        name: 'queryAcdemic',
+        meta: { title: 'queryAcdemic', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createAcdemic',
+        component: createAcdemic,
+        name: 'createAcdemic',
+        meta: { title: 'createAcdemic', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editAcdemic',
+        component: editAcdemic,
+        name: 'editAcdemic',
+        meta: { title: 'editAcdemic', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '/system',

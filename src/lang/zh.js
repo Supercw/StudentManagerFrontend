@@ -76,7 +76,12 @@ export default {
         // 系统管理   //
         system: '系统管理',
         changePassword: '修改密码',
-        resetPassword: '重置密码'
+        resetPassword: '重置密码',
+        // 教务员管理   //
+        acdemicDean: '教务员管理',
+        createAcdemic: '采集信息',
+        editAcdemic: '编辑信息',
+        queryAcdemic: '查询信息'
 
     },
     navbar: {
