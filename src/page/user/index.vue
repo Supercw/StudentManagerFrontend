@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { queryUser, deleteAcdemicDeanById } from '../../service/user'
+import { queryUser, disableUser, enableUser, deleteUserById } from '../../service/user'
 import _ from 'lodash'
 import moment from 'moment'
 export default {
@@ -113,10 +113,36 @@ export default {
         handleDisableAccount(index, row) {
             // 禁用账号
             console.log('禁用handleDisableAccount row.userId', row.userId)
+            disableUser({ userId: row.userId }).then((res) => {
+                console.log('delete success', res)
+                if (res.code === 10000) {
+                    this.showMsg(1, '账号已禁用')
+                    this.query()
+                } else {
+                    let failedMsg = res.message ? res.message : '禁用账号失败,服务器异常'
+                    this.showMsg(4, failedMsg)
+                }
+            }).catch(err => {
+                console.log('delete err', err)
+                this.showMsg(4, '禁用账号失败,服务器异常')
+            })
         },
         handleAbleAccount(index, row) {
             // 启用账号
             console.log('启用handleAbleAccount row.userId', row.userId)
+            enableUser({ userId: row.userId }).then((res) => {
+                console.log('delete success', res)
+                if (res.code === 10000) {
+                    this.showMsg(1, '账号已启用')
+                    this.query()
+                } else {
+                    let failedMsg = res.message ? res.message : '启用账号失败,服务器异常'
+                    this.showMsg(4, failedMsg)
+                }
+            }).catch(err => {
+                console.log('delete err', err)
+                this.showMsg(4, '启用账号失败,服务器异常')
+            })
         },
         handleDelete(index, row) {
             console.log('row.userId', row.userId)
@@ -125,7 +151,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                deleteAcdemicDeanById({ userId: row.userId }).then((res) => {
+                deleteUserById({ userId: row.userId }).then((res) => {
                     console.log('delete success', res)
                     if (res.code === 10000) {
                         this.showMsg(1, '删除成功')

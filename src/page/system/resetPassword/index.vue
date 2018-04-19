@@ -31,9 +31,9 @@
 </template>
 
 <script>
-import { createClass } from '../../../service/class'
+import { resetPassword } from '../../../service/user'
 export default {
-    name: 'createClass',
+    name: 'resetPassword',
     components: {},
     data() {
         return {
@@ -61,27 +61,28 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     console.log('submitForm', this.createForm)
-                    let postData = {
-                        oldPassword: this.createForm.oldPassword,
-                        newPassword: this.createForm.newPassword,
-                        repeatNewPassword: this.createForm.repeatNewPassword
+                    if (!this.routerParams.userId) {
+                        this.showMsg(2, '用户ID不存在')
                     }
-                    createClass(postData).then(res => {
-                        console.log('log success', res)
+                    let postData = {
+                        newPassword: this.createForm.newPassword
+                    }
+                    resetPassword({ userId: this.routerParams.userId }, postData).then(res => {
+                        console.log('resetPassword success', res)
                         if (res.code === 10000) {
                             // 成功
-                            this.showMsg(1, '修改成功')
-                            // this.$router.push({
-                            //     name: 'queryClass'
-                            // })
+                            this.showMsg(1, '重置密码成功')
+                            this.$router.push({
+                                name: 'user'
+                            })
                         } else {
                             // 失败
-                            let failedMsg = res.message ? res.message : '修改失败,服务器异常'
+                            let failedMsg = res.message ? res.message : '重置密码失败,服务器异常'
                             this.showMsg(4, failedMsg)
                         }
                     }).catch(err => {
                         console.log('err', err)
-                        this.showMsg(4, '修改失败,服务器异常')
+                        this.showMsg(4, '重置密码失败,服务器异常')
                     })
                 } else {
                     console.log('error submit!!');
