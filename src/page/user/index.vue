@@ -12,15 +12,15 @@
         <el-main>
             <section class="query">
                 <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
-                    <el-form-item label="名字" prop="name">
-                        <el-input v-model="queryForm.name" placeholder="请输入名字"></el-input>
+                    <el-form-item label="姓名" prop="realName">
+                        <el-input v-model="queryForm.realName" placeholder="请输入名字" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="编号" prop="acdemicDeanNo">
-                        <el-input v-model="queryForm.acdemicDeanNo" placeholder="请输入编号"></el-input>
+                    <el-form-item label="账号" prop="userName">
+                        <el-input v-model="queryForm.userName" placeholder="请输入账号" clearable></el-input>
                     </el-form-item>
-                    <el-form-item label="院系" prop="department">
-                        <el-select v-model="queryForm.department" clearable placeholder="请选择院系">
-                            <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
+                    <el-form-item label="角色" prop="roleName">
+                        <el-select v-model="queryForm.roleName" clearable placeholder="请选择角色">
+                            <el-option v-for="(role,index) in this.roleList" :label="role" :value="role" :key="index"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item>
@@ -32,18 +32,18 @@
             <section class="queryTable">
                 <el-table :data="tableData" border style="width: 100%;" stripe>
                     <el-table-column type="index" width="50"></el-table-column>
-                    <el-table-column prop="name" label="姓名" width="80"></el-table-column>
-                    <el-table-column prop="genderValue" label="性别" width="80"></el-table-column>
-                    <el-table-column prop="age" label="年龄" width="80"></el-table-column>
-                    <el-table-column prop="birth" label="生日"></el-table-column>
-                    <el-table-column prop="idCardNo" label="身份证号"></el-table-column>
-                    <el-table-column prop="generateAcdemicDeanNo" label="编号"></el-table-column>
-                    <el-table-column prop="department" label="院系"></el-table-column>
+                    <el-table-column prop="realName" label="姓名" width="100"></el-table-column>
+                    <el-table-column prop="genderValue" label="性别" width="100"></el-table-column>
+                    <el-table-column prop="roleName" label="角色" width="100"></el-table-column>
+                    <el-table-column prop="userName" label="账号"></el-table-column>
+                    <el-table-column prop="accountStatus" label="账号状态"></el-table-column>
                     <el-table-column prop="createTime" label="创建日期"></el-table-column>
-                    <el-table-column label="操作" width="180">
+                    <el-table-column label="操作" width="270">
                         <template slot-scope="scope">
                             <section class="table-op">
-                                <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                                <el-button v-if="scope.row.isDisabled" size="mini" type="primary" @click="handleAbleAccount(scope.$index, scope.row)">启动</el-button>
+                                <el-button v-else size="mini" type="warning" @click="handleDisableAccount(scope.$index, scope.row)">禁用</el-button>
+                                <el-button size="mini" type="success" @click="handleResetPassword(scope.$index, scope.row)">重置密码</el-button>
                                 <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                             </section>
                         </template>
@@ -59,22 +59,22 @@
 </template>
 
 <script>
-import { queryAcdemicDean, deleteAcdemicDeanById } from '../../service/acdemicDean'
+import { queryUser, deleteAcdemicDeanById } from '../../service/user'
 import _ from 'lodash'
 import moment from 'moment'
 export default {
-    name: 'queryClass',
+    name: 'queryUser',
     data() {
         return {
             queryForm: {
-                department: '',
+                roleName: '',
                 acdemicDeanNo: '',
-                name: ''
+                realName: ''
             },
-            departmentList: [
-                '计算机学院',
-                '材料科学与工程学院',
-                '电子信息工程学院'
+            roleList: [
+                '学生',
+                '教师',
+                '教务员'
             ],
             tableData: [],
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
@@ -101,23 +101,31 @@ export default {
         handlerReset(formName) {
             this.$refs[formName].resetFields()
         },
-        handleEdit(index, row) {
+        handleResetPassword(index, row) {
             console.log(index, row)
             this.$router.push({
-                name: 'editAcdemic',
+                name: 'resetPassword',
                 query: {
-                    acdemicDeanId: row.id
+                    userId: row.userId
                 }
             })
         },
+        handleDisableAccount(index, row) {
+            // 禁用账号
+            console.log('禁用handleDisableAccount row.userId', row.userId)
+        },
+        handleAbleAccount(index, row) {
+            // 启用账号
+            console.log('启用handleAbleAccount row.userId', row.userId)
+        },
         handleDelete(index, row) {
-            console.log('row.id', row.id)
+            console.log('row.userId', row.userId)
             this.$confirm('此操作将删除该记录, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                deleteAcdemicDeanById({ acdemicDeanId: row.id }).then((res) => {
+                deleteAcdemicDeanById({ userId: row.userId }).then((res) => {
                     console.log('delete success', res)
                     if (res.code === 10000) {
                         this.showMsg(1, '删除成功')
@@ -153,17 +161,17 @@ export default {
                 currentPage: this.currentPage,
                 pageSize: this.currentPageSize
             }
-            if (this.queryForm.department) {
-                sendData.department = this.queryForm.department
+            if (this.queryForm.roleName) {
+                sendData.roleName = this.queryForm.roleName
             }
-            if (this.queryForm.acdemicDeanNo) {
-                sendData.acdemicDeanNo = this.queryForm.acdemicDeanNo
+            if (this.queryForm.userName) {
+                sendData.userName = this.queryForm.userName
             }
-            if (this.queryForm.name) {
-                sendData.name = this.queryForm.name
+            if (this.queryForm.realName) {
+                sendData.realName = this.queryForm.realName
             }
             console.log('sendData', sendData)
-            queryAcdemicDean(sendData).then((res) => {
+            queryUser(sendData).then((res) => {
                 console.log('query class success', res)
                 if (res.code === 10000) {
                     // this.showMsg(1, '查询成功')
@@ -173,7 +181,6 @@ export default {
                         if (data.rows) {
                             _.map(data.rows, (item) => {
                                 item.createTime = moment(item.createTime).format('YYYY-MM-DD')
-                                item.birth = moment(item.birth).format('YYYY-MM-DD')
                                 return item
                             })
                             this.tableData = data.rows
