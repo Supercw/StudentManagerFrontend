@@ -30,7 +30,7 @@ export default {
         span {
             color: white;
             font-size: 50px;
-            text-shadow: 5px 5px 5px #FF0000;
+            text-shadow: 5px 5px 5px #FF5000;
         }
     }
 }

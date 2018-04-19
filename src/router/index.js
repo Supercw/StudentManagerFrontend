@@ -67,6 +67,9 @@ const queryAcdemic = r => require.ensure([], () => r(require('../page/acdemicDea
 const changePassword = r => require.ensure([], () => r(require('../page/system/changePassword')), 'changePassword')
 const resetPassword = r => require.ensure([], () => r(require('../page/system/resetPassword')), 'resetPassword')
 
+// 用户管理
+const user = r => require.ensure([], () => r(require('../page/user')), 'user')
+
 /**
  * 配置详解
  * hidden: true 路由不会再侧边栏出现 如401，login等页面(默认 false)
@@ -341,6 +344,16 @@ export const asyncRouterMap = [{
         component: resetPassword,
         name: 'resetPassword',
         meta: { title: 'resetPassword', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/user',
+    component: layout,
+    redirect: '/user/index',
+    children: [{
+        path: 'index',
+        component: user,
+        name: 'user',
+        meta: { title: 'user', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '*',

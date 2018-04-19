@@ -81,8 +81,9 @@ export default {
         acdemicDean: '教务员管理',
         createAcdemic: '采集信息',
         editAcdemic: '编辑信息',
-        queryAcdemic: '查询信息'
-
+        queryAcdemic: '查询信息',
+        // 教务员管理   //
+        user: '用户管理'
     },
     navbar: {
         logOut: '退出登录',
