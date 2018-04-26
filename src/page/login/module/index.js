@@ -1,4 +1,4 @@
-import { getUserInfo, logout } from '../../../service/user'
+import { getUserInfo } from '../../../service/user'
 import storage from '../../../config/storageHelp'
 
 // 初始化state状态

@@ -14,7 +14,7 @@ export default {
     name: 'AppMain',
     computed: {
         cachedViews() {
-            console.log('AppMain component cachedViews', this.$store.state.tagsView.cachedViews)
+            // console.log('AppMain component cachedViews', this.$store.state.tagsView.cachedViews)
             return this.$store.state.tagsView.cachedViews
         }
     },

@@ -35,7 +35,7 @@
             <section class="queryTable">
                 <el-table :data="tableData" border style="width: 100%;" stripe>
                     <el-table-column type="index" width="50"></el-table-column>
-                    <el-table-column prop="courseName" label="课程名" width="80"></el-table-column>
+                    <el-table-column prop="courseName" label="课程名" width="120"></el-table-column>
                     <el-table-column prop="teacherName" label="授课教师" width="80"></el-table-column>
                     <el-table-column prop="courseCredits" label="学分" width="80"></el-table-column>
                     <el-table-column prop="semester" label="学期" width="100"></el-table-column>

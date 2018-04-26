@@ -14,7 +14,7 @@ NProgress.configure({
 }) // NProgress Configuration
 
 function hasPermission(roleType, permissionRoles) {
-    if (roleType === 4 || roleType === 2 || roleType === 3) {
+    if (roleType === 4 || roleType === 2 || roleType === 3 || roleType === 1) {
         return true
     } else {
         return false
@@ -46,14 +46,14 @@ router.beforeEach((to, from, next) => {
             NProgress.done()
         } else {
             // 判断当前用户是否已拉取完user_info信息
-            console.log('当前路由角色', to.path, store.getters.roleType)
+            // console.log('当前路由角色', to.path, store.getters.roleType)
             if (store.getters.roleType === -1) {
                 // 获取用户信息
                 store.dispatch('GetUserInfo').then(() => {
                     // 根据用户的角色动态生成路由
                     store.dispatch('GenerateRouterByRoleType').then(() => {
                         // 根据roles权限生成可访问的路由表
-                        console.log('动态生成的路由', store.getters.addRouters)
+                        // console.log('动态生成的路由', store.getters.addRouters)
                         // 动态添加可访问路由表
                         router.addRoutes(store.getters.addRouters)
                         // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record

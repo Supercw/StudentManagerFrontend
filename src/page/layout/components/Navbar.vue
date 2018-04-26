@@ -37,7 +37,7 @@
                     </el-dropdown-item>
                 </router-link>
                 <!-- 项目地址路由 -->
-                <a target='_blank' href="https://github.com/PanJiaChen/vue-element-admin/">
+                <a target='_blank' href="https://github.com/androidlongfei/StudentManagerFrontend">
                     <el-dropdown-item>
                         {{$t('navbar.github')}}
                     </el-dropdown-item>
@@ -84,13 +84,16 @@ export default {
         },
         logout() {
             this.$store.dispatch('LogOut').then(() => {
-                location.reload() // In order to re-instantiate the vue-router object to avoid bugs
+                // location.reload() // In order to re-instantiate the vue-router object to avoid bugs
+                this.$router.push({
+                    name: 'login'
+                })
             })
         }
     },
 
     mounted() {
-        console.log('Navbar component mounted =>', this.$store.state.app.sidebar);
+        // console.log('Navbar component mounted =>', this.$store.state.app.sidebar);
     }
 }
 </script>

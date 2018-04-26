@@ -27,7 +27,7 @@ export default {
     },
     computed: {
         sidebar() {
-            console.log('layout component sidebar.opened =>', this.$store.state.app.sidebar.opened)
+            // console.log('layout component sidebar.opened =>', this.$store.state.app.sidebar.opened)
             return this.$store.state.app.sidebar
         }
     },
