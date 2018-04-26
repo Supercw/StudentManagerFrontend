@@ -581,6 +581,63 @@ export const teacherAsyncRouterMap = [{
     hidden: true
 }]
 
+// 动态权限(教师)=>(查询课程，查询成绩，系统管理)
+export const studentAsyncRouterMap = [{
+    path: '/course',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'course',
+    meta: {
+        title: 'course',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryArrangCourse',
+        component: queryArrangCourse,
+        name: 'queryArrangCourse',
+        meta: { title: 'queryArrangCourse', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/score',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'score',
+    meta: {
+        title: 'score',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryCourseScore',
+        component: queryCourseScore,
+        name: 'queryCourseScore',
+        meta: { title: 'queryCourseScore', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/person',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'person',
+    meta: {
+        title: 'person',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'studentPersonInfo',
+        component: editStudent,
+        name: 'studentPersonInfo',
+        meta: { title: 'personInfo', icon: 'documentation', noCache: true }
+    }, {
+        path: 'changePassword',
+        component: changePassword,
+        name: 'changePassword',
+        meta: { title: 'changePassword', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+}]
+
 const router = new Router({
     // mode: 'history',
     scrollBehavior(to, from, savedPosition) {

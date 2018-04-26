@@ -12,11 +12,11 @@
         <el-main>
             <section class="query">
                 <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
-                    <el-form-item label="班级名" prop="className">
-                        <el-input v-model="queryForm.className" placeholder="请输入班级名" v-if="showClassFilter()"></el-input>
+                    <el-form-item label="班级名" prop="className" v-if="showClassFilter()">
+                        <el-input v-model="queryForm.className" placeholder="请输入班级名"></el-input>
                     </el-form-item>
-                    <el-form-item label="学生名" prop="studentName">
-                        <el-input v-model="queryForm.studentName" placeholder="请输入学生名" v-if="showStudentFilter()"></el-input>
+                    <el-form-item label="学生名" prop="studentName" v-if="showStudentFilter()">
+                        <el-input v-model="queryForm.studentName" placeholder="请输入学生名"></el-input>
                     </el-form-item>
                     <el-form-item label="课程名" prop="courseName">
                         <el-input v-model="queryForm.courseName" placeholder="请输入课程名"></el-input>
@@ -38,7 +38,7 @@
             <section class="queryTable">
                 <el-table :data="tableData" border style="width: 100%;" stripe>
                     <el-table-column type="index" width="50"></el-table-column>
-                    <el-table-column prop="courseName" label="课程名" width="80"></el-table-column>
+                    <el-table-column prop="courseName" label="课程名"></el-table-column>
                     <el-table-column prop="studentName" label="学生" width="80"></el-table-column>
                     <el-table-column prop="studentNo" label="学号" width="100"></el-table-column>
                     <el-table-column prop="score" label="分数" width="80"></el-table-column>
@@ -48,8 +48,8 @@
                     <el-table-column prop="professional" label="专业"></el-table-column>
                     <el-table-column prop="department" label="院系" width="150"></el-table-column>
                     <el-table-column prop="createTime" label="创建日期"></el-table-column>
-                    <el-table-column label="操作" width="180">
-                        <template slot-scope="scope" v-show="showCreaterOperation()">
+                    <el-table-column label="操作" width="180" v-if="showCreaterOperation()">
+                        <template slot-scope="scope">
                             <section class="table-op">
                                 <div v-if="checkScore(scope.$index, scope.row)"><el-button size="mini" type="primary" @click="handleCreate(scope.$index, scope.row)">采录成绩</el-button></div>
                                 <div v-else>
@@ -263,10 +263,15 @@ export default {
         initData() {
             let user = this.$store.getters.user
             this.roleType = user.roleType
-            if (user && user.roleType === role.type.TEACHER) {
+            if (user.roleType === role.type.TEACHER) {
                 // 当前用户是教师
                 if (user.baseInfo && user.baseInfo.name) {
                     this.queryForm.teacherName = user.baseInfo.name
+                }
+            } else if (user.roleType === role.type.STUDENT) {
+                // 当前用户是学生
+                if (user.baseInfo && user.baseInfo.name) {
+                    this.queryForm.studentName = user.baseInfo.name
                 }
             }
             if (this.$store.getters.departments.length > 0) {

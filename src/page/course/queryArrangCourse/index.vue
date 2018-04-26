@@ -65,6 +65,7 @@
 
 <script>
 import { queryArrangCourse, deleteArrangCourseById } from '../../../service/course'
+import { queryClassById } from '../../../service/class'
 import _ from 'lodash'
 import role from '../../../config/role'
 import moment from 'moment'
@@ -235,10 +236,25 @@ export default {
         initData() {
             let user = this.$store.getters.user
             this.roleType = user.roleType
-            if (user && user.roleType === role.type.TEACHER) {
+            if (user.roleType === role.type.TEACHER) {
                 // 当前用户是教师
                 if (user.baseInfo && user.baseInfo.name) {
                     this.queryForm.teacherName = user.baseInfo.name
+                }
+            } else if (user.roleType === role.type.STUDENT) {
+                // 当前用户是学生
+                if (user.baseInfo && user.baseInfo.classId) {
+                    console.log('班级ID', user.baseInfo.classId)
+                    queryClassById({ classId: user.baseInfo.classId }).then(res => {
+                        console.log('log success', res)
+                        if (res.code === 10000) {
+                            // 成功
+                            console.log('班级信息', res)
+                            if (res.data && res.data.name) {
+                                this.queryForm.className = res.data.name
+                            }
+                        }
+                    })
                 }
             }
             if (this.$store.getters.departments.length > 0) {

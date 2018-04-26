@@ -8,7 +8,8 @@ import {
     asyncRouterMap,
     constantRouterMap,
     acdemicDeanAsyncRouterMap,
-    teacherAsyncRouterMap
+    teacherAsyncRouterMap,
+    studentAsyncRouterMap
 } from '../../../router'
 
 import role from '../../../config/role'
@@ -48,7 +49,7 @@ const actions = {
                 accessedRouters = teacherAsyncRouterMap
             } else if (roleType === role.type.STUDENT) {
                 // 学生
-                accessedRouters = asyncRouterMap
+                accessedRouters = studentAsyncRouterMap
             } else if (roleType === role.type.ACDEMIC) {
                 // 教务员
                 accessedRouters = acdemicDeanAsyncRouterMap

@@ -2,7 +2,8 @@
 <div class="createContainer">
     <el-container>
         <el-header style="" class="head">
-            <span class="title">编辑学生档案</span>
+            <span class="title" v-if="!this.canSubmit">学生个人信息</span>
+            <span class="title" v-else>编辑学生档案</span>
             <div class="operation">
                 <el-button type="primary" size="small" @click="back">返回</el-button>
             </div>
@@ -92,7 +93,7 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <section class="op" style="width:100%;margin: 30px 0;">
+                    <section class="op" style="width:100%;margin: 30px 0;" v-if="this.canSubmit">
                         <el-button type="primary" plain :disabled="this.disabled" @click="submitForm('createForm')">更新</el-button>
                         <el-button type="success" plain :disabled="this.disabled" @click="reductionForm">还原</el-button>
                         <el-button type="danger" plain :disabled="this.disabled" @click="resetForm('createForm')">重置</el-button>
@@ -108,6 +109,7 @@
 import { queryClassNoLoading } from '../../../service/class'
 import { updateStudent, queryStudentById } from '../../../service/student'
 import { converValueToType } from '../../../config/gender'
+import role from '../../../config/role'
 import { isCardID } from '../../../utils/createFormUtil'
 import _ from 'lodash'
 import moment from 'moment'
@@ -217,7 +219,8 @@ export default {
                     label: '导航'
                 }]
             }],
-            disabled: true
+            disabled: true,
+            canSubmit: true // 编辑能提交，查询不能提交
         }
     },
     methods: {
@@ -361,6 +364,14 @@ export default {
             console.log('handleChangeProfessional', value)
         },
         initData() {
+            if (!this.routerParams.studentId) {
+                let user = this.$store.getters.user
+                if (user && user.roleType === role.type.STUDENT) {
+                    // 当前用户是教务员,只有查看权限，没有编辑权限
+                    this.routerParams.studentId = user.targetId
+                    this.canSubmit = false
+                }
+            }
             this.queryDepartments()
             this.query()
         },
