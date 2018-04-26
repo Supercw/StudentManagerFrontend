@@ -108,7 +108,7 @@ export const constantRouterMap = [{
     }]
 }]
 
-// 动态权限
+// 动态权限(管理员)
 export const asyncRouterMap = [{
     path: '/example',
     component: layout,
@@ -354,6 +354,158 @@ export const asyncRouterMap = [{
         component: user,
         name: 'user',
         meta: { title: 'user', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+}]
+
+// 动态权限(教务员)=>(班级管理,学生管理，教师管理，课程管理，成绩管理，系统管理)
+export const acdemicDeanAsyncRouterMap = [{
+    path: '/class',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'class',
+    meta: {
+        title: 'class',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryClass',
+        component: queryClass,
+        name: 'queryClass',
+        meta: { title: 'queryClass', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createClass',
+        component: createClass,
+        name: 'createClass',
+        meta: { title: 'createClass', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editClass',
+        component: editClass,
+        name: 'editClass',
+        meta: { title: 'editClass', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/student',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'student',
+    meta: {
+        title: 'student',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryStudent',
+        component: queryStudent,
+        name: 'queryStudent',
+        meta: { title: 'queryStudent', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createStudent',
+        component: createStudent,
+        name: 'createStudent',
+        meta: { title: 'createStudent', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editStudent',
+        component: editStudent,
+        name: 'editStudent',
+        meta: { title: 'editStudent', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/teacher',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'teacher',
+    meta: {
+        title: 'teacher',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryTeacher',
+        component: queryTeacher,
+        name: 'queryTeacher',
+        meta: { title: 'queryTeacher', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createTeacher',
+        component: createTeacher,
+        name: 'createTeacher',
+        meta: { title: 'createTeacher', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editTeacher',
+        component: editTeacher,
+        name: 'editTeacher',
+        meta: { title: 'editTeacher', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/course',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'course',
+    meta: {
+        title: 'course',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryArrangCourse',
+        component: queryArrangCourse,
+        name: 'queryArrangCourse',
+        meta: { title: 'queryArrangCourse', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createArrangCourse',
+        component: createArrangCourse,
+        name: 'createArrangCourse',
+        meta: { title: 'createArrangCourse', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editArrangCourse',
+        component: editArrangCourse,
+        name: 'editArrangCourse',
+        meta: { title: 'editArrangCourse', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/score',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'score',
+    meta: {
+        title: 'score',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryCourseScore',
+        component: queryCourseScore,
+        name: 'queryCourseScore',
+        meta: { title: 'queryCourseScore', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createCourseScore',
+        component: createCourseScore,
+        name: 'createCourseScore',
+        meta: { title: 'createCourseScore', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editCourseScore',
+        component: editCourseScore,
+        name: 'editCourseScore',
+        meta: { title: 'editCourseScore', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/person',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'person',
+    meta: {
+        title: 'person',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'personInfo',
+        component: editAcdemic,
+        name: 'personInfo',
+        meta: { title: 'personInfo', icon: 'documentation', noCache: true }
+    }, {
+        path: 'changePassword',
+        component: changePassword,
+        name: 'changePassword',
+        meta: { title: 'changePassword', icon: 'documentation', noCache: true }
     }]
 }, {
     path: '*',

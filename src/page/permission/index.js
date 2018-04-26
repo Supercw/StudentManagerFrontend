@@ -5,6 +5,7 @@ import {
 } from 'element-ui'
 
 import storage from '../../config/storageHelp'
+import role from '../../config/role'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css' // progress bar style
@@ -14,9 +15,10 @@ NProgress.configure({
 }) // NProgress Configuration
 
 function hasPermission(roleType, permissionRoles) {
-    if (roleType === 4 || roleType === 2 || roleType === 3 || roleType === 1) {
+    if (roleType === role.type.STUDENT || roleType === role.type.TEACHER || roleType === role.type.ACDEMIC || roleType === role.type.ADMIN) {
         return true
     } else {
+        console.log('角色没权限', roleType)
         return false
     }
 }

@@ -83,7 +83,9 @@ export default {
         editAcdemic: '编辑信息',
         queryAcdemic: '查询信息',
         // 教务员管理   //
-        user: '用户管理'
+        user: '用户管理',
+        person: '个人档案',
+        personInfo: '个人信息'
     },
     navbar: {
         logOut: '退出登录',
