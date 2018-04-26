@@ -5,7 +5,7 @@
             <span class="title">查询课程</span>
             <div class="operation">
                 <!-- <el-button type="primary" size="small">返回</el-button> -->
-                <el-button type="primary" size="small" @click="handlerCreate">创建课程</el-button>
+                <el-button type="primary" size="small" @click="handlerCreate" v-show="showCreaterOperation()">创建课程</el-button>
             </div>
         </el-header>
         <section class="custom-line"></section>
@@ -18,10 +18,10 @@
                     <el-form-item label="课程名" prop="courseName">
                         <el-input v-model="queryForm.courseName" placeholder="请输入课程名"></el-input>
                     </el-form-item>
-                    <el-form-item label="教师" prop="teacherName">
+                    <el-form-item label="教师" prop="teacherName" v-if="showTeacherFilter()">
                         <el-input v-model="queryForm.teacherName" placeholder="请输入教师名"></el-input>
                     </el-form-item>
-                    <el-form-item label="院系" prop="department">
+                    <el-form-item label="院系" prop="department" v-if="showDepartmentFilter()">
                         <el-select v-model="queryForm.department" clearable placeholder="请选择院系">
                             <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
                         </el-select>
@@ -45,7 +45,7 @@
                     <el-table-column prop="professional" label="专业"></el-table-column>
                     <el-table-column prop="department" label="院系" width="150"></el-table-column>
                     <el-table-column prop="createTime" label="创建日期"></el-table-column>
-                    <el-table-column label="操作" width="180">
+                    <el-table-column label="操作" width="180" v-if="showOperation()">
                         <template slot-scope="scope">
                             <section class="table-op">
                                 <el-button size="mini" type="success" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -66,6 +66,7 @@
 <script>
 import { queryArrangCourse, deleteArrangCourseById } from '../../../service/course'
 import _ from 'lodash'
+import role from '../../../config/role'
 import moment from 'moment'
 export default {
     name: 'queryArrangCourse',
@@ -94,7 +95,8 @@ export default {
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
             currentPageSize: 10,
             total: 0, // 总条数
-            currentPage: 1 // 当前页
+            currentPage: 1, // 当前页
+            roleType: -1
 
         }
     },
@@ -123,6 +125,30 @@ export default {
                     arrangCourseId: row.arrangCourseId
                 }
             })
+        },
+        showTeacherFilter() {
+            if (this.roleType === role.type.TEACHER) {
+                return false
+            }
+            return true
+        },
+        showDepartmentFilter() {
+            if (this.roleType === role.type.TEACHER || this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
+        },
+        showOperation() {
+            if (this.roleType === role.type.TEACHER || this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
+        },
+        showCreaterOperation() {
+            if (this.roleType === role.type.TEACHER || this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
         },
         handleDelete(index, row) {
             console.log('row.id', row.arrangCourseId)
@@ -207,6 +233,14 @@ export default {
             })
         },
         initData() {
+            let user = this.$store.getters.user
+            this.roleType = user.roleType
+            if (user && user.roleType === role.type.TEACHER) {
+                // 当前用户是教师
+                if (user.baseInfo && user.baseInfo.name) {
+                    this.queryForm.teacherName = user.baseInfo.name
+                }
+            }
             if (this.$store.getters.departments.length > 0) {
                 this.departmentList = this.$store.getters.departments
             } else {

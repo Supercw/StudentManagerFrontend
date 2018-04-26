@@ -497,9 +497,77 @@ export const acdemicDeanAsyncRouterMap = [{
         icon: 'documentation'
     },
     children: [{
-        path: 'personInfo',
+        path: 'acdemicDeanPersonInfo',
         component: editAcdemic,
-        name: 'personInfo',
+        name: 'acdemicDeanPersonInfo',
+        meta: { title: 'personInfo', icon: 'documentation', noCache: true }
+    }, {
+        path: 'changePassword',
+        component: changePassword,
+        name: 'changePassword',
+        meta: { title: 'changePassword', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+}]
+
+// 动态权限(教师)=>(查询课程，成绩管理，系统管理)
+export const teacherAsyncRouterMap = [{
+    path: '/course',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'course',
+    meta: {
+        title: 'course',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryArrangCourse',
+        component: queryArrangCourse,
+        name: 'queryArrangCourse',
+        meta: { title: 'queryArrangCourse', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/score',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'score',
+    meta: {
+        title: 'score',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'queryCourseScore',
+        component: queryCourseScore,
+        name: 'queryCourseScore',
+        meta: { title: 'queryCourseScore', icon: 'documentation', noCache: true }
+    }, {
+        path: 'createCourseScore',
+        component: createCourseScore,
+        name: 'createCourseScore',
+        meta: { title: 'createCourseScore', icon: 'documentation', noCache: true }
+    }, {
+        path: 'editCourseScore',
+        component: editCourseScore,
+        name: 'editCourseScore',
+        hidden: false,
+        meta: { title: 'editCourseScore', icon: 'documentation', noCache: true }
+    }]
+}, {
+    path: '/person',
+    component: layout,
+    redirect: 'noredirect',
+    name: 'person',
+    meta: {
+        title: 'person',
+        icon: 'documentation'
+    },
+    children: [{
+        path: 'teacherPersonInfo',
+        component: editTeacher,
+        name: 'teacherPersonInfo',
         meta: { title: 'personInfo', icon: 'documentation', noCache: true }
     }, {
         path: 'changePassword',

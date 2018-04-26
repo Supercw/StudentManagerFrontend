@@ -7,7 +7,8 @@ import { SET_ROUTERS } from './mutations_types'
 import {
     asyncRouterMap,
     constantRouterMap,
-    acdemicDeanAsyncRouterMap
+    acdemicDeanAsyncRouterMap,
+    teacherAsyncRouterMap
 } from '../../../router'
 
 import role from '../../../config/role'
@@ -44,7 +45,7 @@ const actions = {
                 accessedRouters = asyncRouterMap
             } else if (roleType === role.type.TEACHER) {
                 // 教师
-                accessedRouters = asyncRouterMap
+                accessedRouters = teacherAsyncRouterMap
             } else if (roleType === role.type.STUDENT) {
                 // 学生
                 accessedRouters = asyncRouterMap

@@ -13,18 +13,18 @@
             <section class="query">
                 <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
                     <el-form-item label="班级名" prop="className">
-                        <el-input v-model="queryForm.className" placeholder="请输入班级名"></el-input>
+                        <el-input v-model="queryForm.className" placeholder="请输入班级名" v-if="showClassFilter()"></el-input>
                     </el-form-item>
                     <el-form-item label="学生名" prop="studentName">
-                        <el-input v-model="queryForm.studentName" placeholder="请输入学生名"></el-input>
+                        <el-input v-model="queryForm.studentName" placeholder="请输入学生名" v-if="showStudentFilter()"></el-input>
                     </el-form-item>
                     <el-form-item label="课程名" prop="courseName">
                         <el-input v-model="queryForm.courseName" placeholder="请输入课程名"></el-input>
                     </el-form-item>
-                    <el-form-item label="教师" prop="teacherName">
+                    <el-form-item label="教师" prop="teacherName" v-if="showTeacherFilter()">
                         <el-input v-model="queryForm.teacherName" placeholder="请输入教师名"></el-input>
                     </el-form-item>
-                    <el-form-item label="院系" prop="department">
+                    <el-form-item label="院系" prop="department" v-if="showDepartmentFilter()">
                         <el-select v-model="queryForm.department" clearable placeholder="请选择院系">
                             <el-option v-for="(department,index) in this.departmentList" :label="department" :value="department" :key="index"></el-option>
                         </el-select>
@@ -49,7 +49,7 @@
                     <el-table-column prop="department" label="院系" width="150"></el-table-column>
                     <el-table-column prop="createTime" label="创建日期"></el-table-column>
                     <el-table-column label="操作" width="180">
-                        <template slot-scope="scope">
+                        <template slot-scope="scope" v-show="showCreaterOperation()">
                             <section class="table-op">
                                 <div v-if="checkScore(scope.$index, scope.row)"><el-button size="mini" type="primary" @click="handleCreate(scope.$index, scope.row)">采录成绩</el-button></div>
                                 <div v-else>
@@ -72,6 +72,7 @@
 <script>
 import { queryScore, deleteScoreById } from '../../../service/score'
 import _ from 'lodash'
+import role from '../../../config/role'
 import moment from 'moment'
 export default {
     name: 'queryArrangCourse',
@@ -93,7 +94,8 @@ export default {
             pageSizes: [2, 5, 10], // 每页显示的条数,可选
             currentPageSize: 10,
             total: 0, // 总条数
-            currentPage: 1 // 当前页
+            currentPage: 1, // 当前页
+            roleType: -1
 
         }
     },
@@ -118,6 +120,42 @@ export default {
         },
         handlerExport() {
             console.log('handlerExport.....')
+        },
+        showTeacherFilter() {
+            if (this.roleType === role.type.TEACHER) {
+                return false
+            }
+            return true
+        },
+        showDepartmentFilter() {
+            if (this.roleType === role.type.TEACHER || this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
+        },
+        showOperation() {
+            if (this.roleType === role.type.TEACHER || this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
+        },
+        showStudentFilter() {
+            if (this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
+        },
+        showClassFilter() {
+            if (this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
+        },
+        showCreaterOperation() {
+            if (this.roleType === role.type.STUDENT) {
+                return false
+            }
+            return true
         },
         checkScore(index, row) {
             // console.log('handleCreate', index, row)
@@ -223,6 +261,14 @@ export default {
             })
         },
         initData() {
+            let user = this.$store.getters.user
+            this.roleType = user.roleType
+            if (user && user.roleType === role.type.TEACHER) {
+                // 当前用户是教师
+                if (user.baseInfo && user.baseInfo.name) {
+                    this.queryForm.teacherName = user.baseInfo.name
+                }
+            }
             if (this.$store.getters.departments.length > 0) {
                 this.departmentList = this.$store.getters.departments
             } else {
