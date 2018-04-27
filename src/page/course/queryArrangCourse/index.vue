@@ -12,7 +12,7 @@
         <el-main>
             <section class="query">
                 <el-form :inline="true" :model="queryForm" ref="queryForm" size="small">
-                    <el-form-item label="班级名" prop="className">
+                    <el-form-item label="班级名" prop="className" v-if="showClassFilter()">
                         <el-input v-model="queryForm.className" placeholder="请输入班级名"></el-input>
                     </el-form-item>
                     <el-form-item label="课程名" prop="courseName">
@@ -65,7 +65,6 @@
 
 <script>
 import { queryArrangCourse, deleteArrangCourseById } from '../../../service/course'
-import { queryClassById } from '../../../service/class'
 import _ from 'lodash'
 import role from '../../../config/role'
 import moment from 'moment'
@@ -77,7 +76,8 @@ export default {
                 className: '',
                 department: '',
                 courseName: '',
-                teacherName: ''
+                teacherName: '',
+                classId: ''
             },
             departmentList: [
                 '计算机学院',
@@ -129,6 +129,12 @@ export default {
         },
         showTeacherFilter() {
             if (this.roleType === role.type.TEACHER) {
+                return false
+            }
+            return true
+        },
+        showClassFilter() {
+            if (this.roleType === role.type.STUDENT) {
                 return false
             }
             return true
@@ -196,6 +202,10 @@ export default {
             }
             if (this.queryForm.className) {
                 sendData.className = this.queryForm.className
+            } else {
+                if (this.queryForm.classId) {
+                    sendData.classId = this.queryForm.classId
+                }
             }
             if (this.queryForm.department) {
                 sendData.department = this.queryForm.department
@@ -244,17 +254,7 @@ export default {
             } else if (user.roleType === role.type.STUDENT) {
                 // 当前用户是学生
                 if (user.baseInfo && user.baseInfo.classId) {
-                    console.log('班级ID', user.baseInfo.classId)
-                    queryClassById({ classId: user.baseInfo.classId }).then(res => {
-                        console.log('log success', res)
-                        if (res.code === 10000) {
-                            // 成功
-                            console.log('班级信息', res)
-                            if (res.data && res.data.name) {
-                                this.queryForm.className = res.data.name
-                            }
-                        }
-                    })
+                    this.queryForm.classId = user.baseInfo.classId
                 }
             }
             if (this.$store.getters.departments.length > 0) {
