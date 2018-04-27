@@ -37,11 +37,11 @@
                     </el-dropdown-item>
                 </router-link>
                 <!-- 项目地址路由 -->
-                <a target='_blank' href="https://github.com/androidlongfei/StudentManagerFrontend">
+                <!-- <a target='_blank' href="https://github.com/androidlongfei/StudentManagerFrontend">
                     <el-dropdown-item>
                         {{$t('navbar.github')}}
                     </el-dropdown-item>
-                </a>
+                </a> -->
                 <!-- 退出 -->
                 <el-dropdown-item divided>
                     <span @click="logout" style="display:block;">{{$t('navbar.logOut')}}</span>
@@ -94,6 +94,7 @@ export default {
 
     mounted() {
         // console.log('Navbar component mounted =>', this.$store.state.app.sidebar);
+        // this.initData()
     }
 }
 </script>

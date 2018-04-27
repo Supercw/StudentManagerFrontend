@@ -12,13 +12,13 @@
             <section class="create">
                 <el-form :model="createForm" :rules="rules" ref="createForm" label-width="100px" style="width:600px;">
                     <el-form-item label="旧密码" prop="oldPassword" class="m20">
-                        <el-input v-model="createForm.oldPassword"></el-input>
+                        <el-input v-model="createForm.oldPassword" type="password"></el-input>
                     </el-form-item>
                     <el-form-item label="新密码" prop="newPassword" class="m35">
-                        <el-input v-model="createForm.newPassword"></el-input>
+                        <el-input v-model="createForm.newPassword" type="password"></el-input>
                     </el-form-item>
                     <el-form-item label="再次密码" prop="repeatNewPassword" class="m35">
-                        <el-input v-model="createForm.repeatNewPassword"></el-input>
+                        <el-input v-model="createForm.repeatNewPassword" type="password"></el-input>
                     </el-form-item>
                     <el-form-item class="m35">
                         <section class="op">
@@ -39,6 +39,14 @@ export default {
     name: 'createClass',
     components: {},
     data() {
+        // const checkRepeatPws = (rule, value, callback) => {
+        //     if (this.createForm.newPassword) {
+        //         if (this.createForm.newPassword !== this.createForm.repeatNewPassword) {
+        //             return callback(new Error('两次密码不一致'))
+        //         }
+        //     }
+        //     callback()
+        // };
         return {
             createForm: {
                 oldPassword: '',
@@ -57,6 +65,7 @@ export default {
                 repeatNewPassword: [
                     { required: true, message: '请输入密码', trigger: 'blur' },
                     { min: 6, message: '长度需大于6字符', trigger: 'blur' }
+                    // { required: true, validator: checkRepeatPws, trigger: 'blur' }
                 ]
             },
             routerParams: {
@@ -69,6 +78,10 @@ export default {
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     console.log('submitForm', this.createForm)
+                    if (this.createForm.newPassword !== this.createForm.repeatNewPassword) {
+                        this.showMsg(2, '两次密码不一致')
+                        return
+                    }
                     let postData = {
                         oldPassword: this.createForm.oldPassword,
                         newPassword: this.createForm.newPassword

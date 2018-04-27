@@ -12,10 +12,10 @@
             <section class="create">
                 <el-form :model="createForm" :rules="rules" ref="createForm" label-width="100px" style="width:600px;">
                     <el-form-item label="密码" prop="newPassword" class="m20">
-                        <el-input v-model="createForm.newPassword"></el-input>
+                        <el-input v-model="createForm.newPassword" type="password"></el-input>
                     </el-form-item>
                     <el-form-item label="再次密码" prop="repeatNewPassword" class="m35">
-                        <el-input v-model="createForm.repeatNewPassword"></el-input>
+                        <el-input v-model="createForm.repeatNewPassword" type="password"></el-input>
                     </el-form-item>
                     <el-form-item class="m35">
                         <section class="op">
@@ -63,6 +63,11 @@ export default {
                     console.log('submitForm', this.createForm)
                     if (!this.routerParams.userId) {
                         this.showMsg(2, '用户ID不存在')
+                        return
+                    }
+                    if (this.createForm.newPassword !== this.createForm.repeatNewPassword) {
+                        this.showMsg(2, '两次密码不一致')
+                        return
                     }
                     let postData = {
                         newPassword: this.createForm.newPassword
