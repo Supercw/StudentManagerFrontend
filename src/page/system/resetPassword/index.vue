@@ -11,6 +11,12 @@
         <el-main>
             <section class="create">
                 <el-form :model="createForm" :rules="rules" ref="createForm" label-width="100px" style="width:600px;">
+                    <el-form-item label="姓名" prop="name" class="m20">
+                        <el-input v-model="createForm.name" disabled></el-input>
+                    </el-form-item>
+                    <el-form-item label="账号" prop="username" class="m20">
+                        <el-input v-model="createForm.userName" disabled></el-input>
+                    </el-form-item>
                     <el-form-item label="密码" prop="newPassword" class="m20">
                         <el-input v-model="createForm.newPassword" type="password"></el-input>
                     </el-form-item>
@@ -31,13 +37,15 @@
 </template>
 
 <script>
-import { resetPassword } from '../../../service/user'
+import { resetPassword, getUserInfo } from '../../../service/user'
 export default {
     name: 'resetPassword',
     components: {},
     data() {
         return {
             createForm: {
+                name: '',
+                username: '',
                 newPassword: '',
                 repeatNewPassword: ''
             },
@@ -101,7 +109,37 @@ export default {
         back() {
             this.$router.go(-1)
         },
-        initData() {}
+        mergeData(data) {
+            // console.log('data', data);
+            if (data.username) {
+                this.createForm.userName = data.username
+            }
+            if (data.baseInfo) {
+                if (data.baseInfo.name) {
+                    this.createForm.name = data.baseInfo.name
+                }
+            }
+        },
+        initData() {
+            if (!this.routerParams.userId) {
+                this.showMsg(2, '用户ID不存在')
+                return
+            }
+            getUserInfo({ userId: this.routerParams.userId }).then(res => {
+                // console.log('getUserInfo success', res)
+                if (res.code === 10000) {
+                    // 成功
+                    this.mergeData(res.data)
+                } else {
+                    // 失败
+                    let failedMsg = res.message ? res.message : '获取用户信息失败,服务器异常'
+                    this.showMsg(4, failedMsg)
+                }
+            }).catch(err => {
+                console.log('err', err)
+                this.showMsg(4, '获取用户信息失败,服务器异常')
+            })
+        }
     },
     mounted() {
         this.routerParams = this.$route.query
