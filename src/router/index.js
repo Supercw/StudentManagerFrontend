@@ -78,6 +78,7 @@ const user = r => require.ensure([], () => r(require('../page/user')), 'user')
 
 Vue.use(Router)
 
+// 全局路由
 export const constantRouterMap = [{
     path: '/login',
     component: login,
@@ -581,7 +582,7 @@ export const teacherAsyncRouterMap = [{
     hidden: true
 }]
 
-// 动态权限(教师)=>(查询课程，查询成绩，系统管理)
+// 动态权限(学生)=>(查询课程，查询成绩，系统管理)
 export const studentAsyncRouterMap = [{
     path: '/course',
     component: layout,

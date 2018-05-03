@@ -48,11 +48,6 @@ export default {
     }
 }
 </script>
-<style lang="css">
-    #app .main-container .center {
-        height: 100%;
-    }
-</style>
 
 <style lang="scss" scoped>
 .center {
