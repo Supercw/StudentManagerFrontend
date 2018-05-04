@@ -3,10 +3,11 @@ import {
     baseUrl,
     token
 } from './env'
-import { Loading } from 'element-ui'; // 全局loading
+import { Loading, Message } from 'element-ui'; // 全局loading
 import storage from './storageHelp'
 
-// import store from '../store'
+import store from '../store'
+import router from '../router'
 // import qs from 'qs'
 
 let isShowElementLoading = true // 默认显示loading
@@ -69,6 +70,7 @@ service.interceptors.request.use(config => {
 // response 响应拦截器, 主要是对错误统一处理
 service.interceptors.response.use(
     response => {
+        closeElementLoading()
         // console.log('interceptors response success', response)
         let result = {}
         if (response.status === 200) {
@@ -78,8 +80,18 @@ service.interceptors.response.use(
             result.code = response.data.code ? response.data.code : 10001
             result.message = response.data.message ? response.data.message : ''
             result.error = response.data.error ? response.data.error : ''
+            if (result.code === 50000) {
+                // 跳转到登录页
+                console.log('token过期===>', result.message)
+                store.dispatch('LogOut').then(() => {
+                    Message.error('登录超时, 请重新登录')
+                    // alert('登录超时, 请重新登录')
+                    router.push({
+                        name: 'login'
+                    })
+                })
+            }
         }
-        closeElementLoading()
         // console.log('result', result)
         return result
     },

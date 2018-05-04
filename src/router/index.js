@@ -82,6 +82,7 @@ Vue.use(Router)
 export const constantRouterMap = [{
     path: '/login',
     component: login,
+    name: 'login',
     hidden: true
 }, {
     path: '/404',

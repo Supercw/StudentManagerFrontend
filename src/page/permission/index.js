@@ -66,7 +66,7 @@ router.beforeEach((to, from, next) => {
                 }).catch(() => {
                     // console.log('LogOut')
                     store.dispatch('LogOut').then(() => {
-                        Message.error('Verification failed, please login again')
+                        Message.error('登录超时, 请重新登录')
                         next({
                             path: '/login'
                         })
